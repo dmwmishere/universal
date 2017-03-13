@@ -22,6 +22,6 @@ Simple application 2 plei wiz camel stuff 2 request meme information from databa
 3. Split camel routes to separate files
 4. Add memes by calling sys1 service and sending soap-request to sys2
 
-## FIX:
+## FIX 1:
 * Investigate bottlenecks
 * JMS response correlations (RqUID)
