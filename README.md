@@ -6,6 +6,16 @@ Simple application 2 plei wiz camel stuff 2 request meme information from databa
 2. sys1 - sends meme requests to sys2 (SOAP --> file + JMS/ActiveMq)
 3. sys2 - retrieves information about a meme from database (HSQLDB) and sends it back to sys1 by JMQ
 
+Features:
+- Maven
+- Springframework (beans, injections, jdbc)
+- Property files
+- Camel (cxf/jms/log/threads/timers/file)
+- cxf (sys1)
+- Log4j (multiple files config)
+- AOP (logging, response time)
+- Sending stats to influxdb (tps, response time)
+
 ## Features:
 * Maven
 * Springframework (beans, injections, jdbc)
