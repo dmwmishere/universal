@@ -1,0 +1,1 @@
+select uuid, datediff('Millisecond', starttime, stoptime) from operations;
