@@ -3,3 +3,6 @@ target/
 COPIED/
 GENERATED/
 .settings/
+.project
+.classpath
+
