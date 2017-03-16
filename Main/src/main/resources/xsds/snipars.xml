@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:meme xmlns:tns="http://www.example.org/dataTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/dataTypes dataTypes.xsd ">
+  <tns:id>0</tns:id>
+  <tns:datetime>2001-12-31T12:00:00</tns:datetime>
+  <tns:uuid>123123123123</tns:uuid>
+  <tns:name>xXx_Sn1pars_xXx</tns:name>
+  <tns:dankLevel>1337</tns:dankLevel>
+  <tns:fileType size="420">
+  	<tns:extension>PLAIN</tns:extension>
+  </tns:fileType>
+  <tns:data>9/11 - would quick sc0pe</tns:data>
+</tns:meme>

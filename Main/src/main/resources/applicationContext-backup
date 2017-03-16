@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+">
+
+	<context:property-placeholder location="file:basic.properties" />
+	<context:component-scan base-package="dmwm" />
+	<bean id="properties"
+		class="org.apache.camel.component.properties.PropertiesComponent">
+		<property name="location" value="file:basic.properties" />
+	</bean>
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.uname}" />
+		<property name="password" value="${jdbc.pswd}" />
+	</bean>
+
+	<bean id="cfA" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="tcp://localhost:61616" /> <!-- ?broker.persistent=false -->
+	</bean>
+
+	<bean id="activemqA" class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="connectionFactory" ref="cfA" />
+	</bean>
+	<bean id="TBP" class="dmwm.processors.TimerBeanProcessor" />
+	<bean id="httpresponser" class="dmwm.processors.HttpResponser" />
+	<bean id="zippacker" class="dmwm.processors.ZipPacker" />
+	<bean id="nfgen" class="dmwm.processors.NFGenerator" />
+	<bean id="memecreator" class="dmwm.processors.CreateMeme" />
+	<bean id="memereceiver" class="dmwm.processors.MemeReceiver" />
+	<camelContext xmlns="http://camel.apache.org/schema/spring">
+		<route>
+			<from uri="timer://foo?fixedRate=true&amp;period=10000" />
+
+			<process ref="TBP" />
+			<to uri="http://localhost:8086/write?db=testdb" />
+		</route>
+		<!-- INPUT START POINT -->
+		<route>
+			<from uri="jetty:http://localhost:6666/dmwm/testsrv" />
+			<log message="RECEIVED SOME COMMAND" loggingLevel="INFO" />
+			<process ref="httpresponser" />
+			<choice>
+				<when>
+					<simple>${property.stubcommand} == 'tfs'</simple>
+					<log message="TFS FILE GENERATION" loggingLevel="INFO" />
+					<multicast parallelProcessing="false">
+						<to uri="direct:generateFile" />
+						<to uri="direct:generateNf" />
+					</multicast>
+				</when>
+				<when>
+					<simple>${property.stubcommand} == 'meme'</simple>
+					<log message="SEND M3M3 3 QUEUE" loggingLevel="INFO" />
+					<to uri="direct:send2mq" />
+				</when>
+				<otherwise>
+					<log message="UNKNOWN COMMAND ${property.stubcommand}"
+						loggingLevel="WARN" />
+				</otherwise>
+			</choice>
+		</route>
+		<!-- TFS Generation Routes -->
+		<route>
+			<from uri="direct:generateFile" />
+			<process ref="zippacker" />
+			<to uri="file:GENERATED" />
+		</route>
+
+		<route>
+			<from uri="direct:generateNf" />
+			<process ref="nfgen" />
+			<to
+				uri="activemqA:queue:DMWM.OUT.MSG.A?disableTimeToLive=true&amp;disableReplyTo=true" />
+		</route>
+
+
+		<!-- Active MQ send test messages routes -->
+		<route>
+			<from uri="direct:send2mq" />
+			<process ref="memecreator" />
+			<to
+				uri="activemqA:queue:CAROLINA.IN?disableTimeToLive=true&amp;disableReplyTo=true" />
+		</route>
+
+		<route>
+			<from uri="activemqA:queue:CAROLINA.IN" />
+			<delay asyncDelayed="true">
+				<constant>500</constant>
+			</delay>
+			<process ref="memereceiver" />
+			<to uri="activemqA:queue:CAROLINA.OUT?disableTimeToLive=true&amp;disableReplyTo=true" />
+		</route>
+
+	</camelContext>
+</beans>
