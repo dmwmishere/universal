@@ -69,7 +69,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			defaultProfile="true" poolSize="20" maxPoolSize="40" maxQueueSize="500"
 			allowCoreThreadTimeOut="false" rejectedPolicy="CallerRuns" />
 		<dataFormats>
-			<jaxb id="ds" prettyPrint="true" contextPath="org.dmwm.universal.sys1.data.xsds" />
+			<jaxb id="ds" prettyPrint="true" contextPath="org.dmwm.universal.core.data.xsds" />
 		</dataFormats>
 
 		<!-- Sending executed operations into influx -->
