@@ -19,6 +19,11 @@
 			<artifactId>Core</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
