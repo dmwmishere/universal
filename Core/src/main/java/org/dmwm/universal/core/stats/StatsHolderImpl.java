@@ -4,14 +4,21 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
+import org.dmwm.universal.core.utils.database.QueryProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class StatsHolderImpl implements StatsHolder {
 
+	@Autowired
+	QueryProcessor qp;
+	
 	private final String seriesName;
 
 	private static final Logger log = Logger.getLogger(StatsHolderImpl.class);
 
 	private final static Map<String, Long> operations = new ConcurrentHashMap<>();
+
+	private final static Map<String, Long> resptime = new ConcurrentHashMap<>();
 
 	public StatsHolderImpl(String seriesName) {
 		this.seriesName = seriesName;
@@ -43,5 +50,19 @@ public class StatsHolderImpl implements StatsHolder {
 		}
 		log.debug("Influx data = " + influxData);
 		return influxData;
+	}
+
+	@Override
+	public Long startOperation(String id) {
+		qp.startOperation(id, 666, "", 0);
+		return resptime.putIfAbsent(id, System.currentTimeMillis());
+	}
+
+	@Override
+	public Long stopOperation(String id) {
+		Long rt = resptime.containsKey(id)?System.currentTimeMillis()-resptime.get(id):-1L;
+		qp.stopOperation(id);
+		log.debug(id + " response time = " + rt);
+		return rt;
 	}
 }

@@ -3,9 +3,7 @@ package org.dmwm.universal.core.aspectz;
 import org.apache.camel.Exchange;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.dmwm.universal.core.stats.StatsHolder;
@@ -35,7 +33,7 @@ public class SampleAspect {
 	
 	@AfterReturning("processors() && args(msg)")
 	public void logProcessor(JoinPoint jp, Exchange msg){
-//		log.warn("ASPECT: " + jp.getTarget().getClass().getSimpleName());
+		log.warn("ASPECT: " + jp.getTarget().getClass().getSimpleName());
 		sh.putStat("Aop_" + jp.getTarget().getClass().getSimpleName());
 	}
 	

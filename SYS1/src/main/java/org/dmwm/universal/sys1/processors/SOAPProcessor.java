@@ -22,6 +22,7 @@ public class SOAPProcessor implements Processor {
 	@Override
 	public void process(Exchange msg) throws Exception {
 		try{
+		log.info("Calling " + msg.getIn().getHeader("operationName"));
 	//	SOAPMessage smsg = (SOAPMessage)msg.getIn().getBody(List.class).get(0);
 		int memeid = (Integer)msg.getIn().getBody(List.class).get(0);
 		int dankLevel = (Integer)msg.getIn().getBody(List.class).get(1);

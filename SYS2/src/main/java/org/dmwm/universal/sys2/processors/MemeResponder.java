@@ -4,7 +4,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.log4j.Logger;
 import org.dmwm.universal.core.stats.StatsHolder;
-import org.dmwm.universal.sys2.utils.database.QueryProcessor;
+import org.dmwm.universal.core.utils.database.QueryProcessor;
 import org.dmwm.universal.core.utils.xml.QuickDocumentParser;
 import org.dmwm.universal.core.data.xsds.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class MemeResponder implements Processor {
 	@Override
 	public void process(Exchange msg) throws Exception {
 		String request = msg.getIn().getBody(String.class);
-		log.debug("SYS-2: RESPONDING..." + request);
+		log.debug("SYS-2: RESPONDING...");
 		Element el = QuickDocumentParser.parseFromString(request).getDocumentElement()	;
 		String uid = QuickDocumentParser.getByTag(el, "uuid");
 		
@@ -31,6 +31,7 @@ public class MemeResponder implements Processor {
 		Response rs = qp.getMeme(Integer.parseInt(QuickDocumentParser.getByTag(el, "id")));
 		rs.setRqUID(uid);
 		msg.getOut().setBody(rs);
+		sh.stopOperation(rs.getRqUID());
 	}
 
 }

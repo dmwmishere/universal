@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:cxf="http://camel.apache.org/schema/cxf"
-	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
@@ -12,14 +11,14 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
 	<context:property-placeholder location="file:basic.properties" />
 	<context:component-scan base-package="org.dmwm.universal" />
-	
+
 	<aop:aspectj-autoproxy />
-	
+
 	<bean id="properties"
 		class="org.apache.camel.component.properties.PropertiesComponent">
 		<property name="location" value="file:basic.properties" />
 	</bean>
-	
+
 	<!-- Connect 2 database -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
@@ -56,11 +55,12 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
 	<bean id="nfconsume" class="org.dmwm.universal.sys2.processors.MemeRequestHandler" />
 	<bean id="resp" class="org.dmwm.universal.sys2.processors.MemeResponder" />
-
+	<bean id="mdi" class="org.dmwm.universal.sys2.processors.MemeDBInterfaceImpl" />
 
 	<cxf:cxfEndpoint id="customerServiceEndpoint" address="http://localhost:9090/memeSender"
-		serviceName="s:customer:MemeSender" serviceClass="org.dmwm.universal.sys1.ws.MemeSender"
-		xmlns:s="http://notsoclever.cc/customerService" />
+		serviceClass="org.dmwm.universal.sys1.ws.MemeSender" />
+	<cxf:cxfEndpoint id="memeInterfaze"
+		address="http://localhost:9091/memeInterfaze" serviceClass="org.dmwm.universal.sys2.ws.MemeDBInterface" />
 
 	<camelContext xmlns="http://camel.apache.org/schema/spring">
 
@@ -68,6 +68,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<threadPoolProfile id="defaultThreadPoolProfile"
 			defaultProfile="true" poolSize="20" maxPoolSize="40" maxQueueSize="500"
 			allowCoreThreadTimeOut="false" rejectedPolicy="CallerRuns" />
+
+		<endpoint id="callRealWebService"
+			uri="http://localhost:9091/memeInterfaze?throwExceptionOnFailure=true" />
+
 		<dataFormats>
 			<jaxb id="ds" prettyPrint="true" contextPath="org.dmwm.universal.core.data.xsds" />
 		</dataFormats>
@@ -85,15 +89,28 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			</filter>
 		</route>
 
+
 		<!-- SYS-1: generate file and send MemeRq -->
 		<route id="soap-receiver" autoStartup="true">
 			<from uri="cxf:bean:customerServiceEndpoint" />
-			<process ref="soapproc" />
-			<multicast parallelProcessing="false">
-				<to uri="direct:generateFile" />
-				<to uri="direct:generateNf" />
-			</multicast>
-			<unmarshal ref="ds" />
+			<choice>
+				<when>
+					<simple>${header.operationName} == 'addMeme'</simple>
+					<log message="WS BOdY: ${in.body}*" />
+					<!-- to ref="callRealWebService" / -->
+					<!-- to uri="spring-ws:http://localhost:9091/memeInterfaze" / -->
+					<to uri="stream:out" />
+				</when>
+				<otherwise>
+					<process ref="soapproc" />
+					<multicast parallelProcessing="false">
+						<to uri="direct:generateFile" />
+						<to uri="direct:generateNf" />
+					</multicast>
+					<unmarshal ref="ds" />
+				</otherwise>
+			</choice>
+
 		</route>
 
 		<route id="file-generator">
@@ -106,7 +123,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<from uri="direct:generateNf" />
 			<process ref="nfgen" />
 			<marshal ref="ds" />
-			<inOnly uri="activemqA:queue:MEME.IN" />
+			<to uri="activemqA:queue:MEME.IN?replyTo=MEME.OUT" />
 		</route>
 
 		<!-- SYS-2: Consuming notifications and files -->
@@ -124,7 +141,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<route>
 			<from uri="direct:enricher" />
 			<pollEnrich timeout="5000">
-				<simple>file:GENERATED?fileName=${header.CamelFileName}&amp;delete=true</simple> <!-- &amp;noop=true&amp;idempotent=false -->
+				<simple>file:GENERATED?fileName=${header.CamelFileName}&amp;delete=true
+				</simple> <!-- &amp;noop=true&amp;idempotent=false -->
 			</pollEnrich>
 			<log message="Coping file..." loggingLevel="DEBUG" />
 			<to uri="file:COPIED?fileName=${header.CamelFileName}" />
@@ -135,8 +153,12 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<from uri="direct:responder" />
 			<process ref="resp" />
 			<marshal ref="ds" />
-			<to uri="activemqA:queue:MEME.OUT" />
+			<inOnly uri="activemqA:queue:MEME.OUT" />
 		</route>
 
+		<route id="sys2-soap-receiver" autoStartup="true">
+			<from uri="cxf:bean:memeInterfaze" />
+			<process ref="mdi" />
+		</route>
 	</camelContext>
 </beans>
