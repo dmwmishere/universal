@@ -9,6 +9,10 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
 
+	<!-- Routes and beans for each system -->
+	<import resource="sys1-routes.xml"/>
+	<import resource="sys2-routes.xml"/>
+
 	<context:property-placeholder location="file:basic.properties" />
 	<context:component-scan base-package="org.dmwm.universal" />
 
@@ -41,29 +45,23 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	</bean>
 
 	<bean id="cfA" class="org.apache.activemq.ActiveMQConnectionFactory">
-		<property name="brokerURL" value="tcp://localhost:61616" /> <!-- ?broker.persistent=false -->
+		<property name="brokerURL" value="tcp://${mq.host}" /> <!-- ?broker.persistent=false -->
 	</bean>
 
 	<bean id="activemqA" class="org.apache.activemq.camel.component.ActiveMQComponent">
 		<property name="connectionFactory" ref="cfA" />
 		<property name="asyncConsumer" value="true" />
 	</bean>
-
-	<bean id="gzpacker" class="org.dmwm.universal.sys1.processors.GzPacker" />
-	<bean id="nfgen" class="org.dmwm.universal.sys1.processors.NFGenerator" />
-	<bean id="soapproc" class="org.dmwm.universal.sys1.processors.SOAPProcessor" />
-
-	<bean id="nfconsume" class="org.dmwm.universal.sys2.processors.MemeRequestHandler" />
-	<bean id="resp" class="org.dmwm.universal.sys2.processors.MemeResponder" />
-	<bean id="mdi" class="org.dmwm.universal.sys2.processors.MemeDBInterfaceImpl" />
-
-	<cxf:cxfEndpoint id="customerServiceEndpoint" address="http://localhost:9090/memeSender"
-		serviceClass="org.dmwm.universal.sys1.ws.MemeSender" />
-	<cxf:cxfEndpoint id="memeInterfaze"
-		address="http://localhost:9091/memeInterfaze" serviceClass="org.dmwm.universal.sys2.ws.MemeDBInterface" />
-
+	
+	
 	<camelContext xmlns="http://camel.apache.org/schema/spring">
-
+	
+		<!-- Routes for each system -->
+		<routeContextRef ref="sys1-routes"/>
+		<routeContextRef ref="sys2-routes"/>
+		
+		<!-- Common stuff below-->
+		
 		<!-- Setting up default thread pool -->
 		<threadPoolProfile id="defaultThreadPoolProfile"
 			defaultProfile="true" poolSize="20" maxPoolSize="40" maxQueueSize="500"
@@ -88,77 +86,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 				<to uri="http://{{influx.url}}/write?db={{influx.db}}" />
 			</filter>
 		</route>
-
-
-		<!-- SYS-1: generate file and send MemeRq -->
-		<route id="soap-receiver" autoStartup="true">
-			<from uri="cxf:bean:customerServiceEndpoint" />
-			<choice>
-				<when>
-					<simple>${header.operationName} == 'addMeme'</simple>
-					<log message="WS BOdY: ${in.body}*" />
-					<!-- to ref="callRealWebService" / -->
-					<!-- to uri="spring-ws:http://localhost:9091/memeInterfaze" / -->
-					<to uri="stream:out" />
-				</when>
-				<otherwise>
-					<process ref="soapproc" />
-					<multicast parallelProcessing="false">
-						<to uri="direct:generateFile" />
-						<to uri="direct:generateNf" />
-					</multicast>
-					<unmarshal ref="ds" />
-				</otherwise>
-			</choice>
-
-		</route>
-
-		<route id="file-generator">
-			<from uri="direct:generateFile" />
-			<process ref="gzpacker" />
-			<to uri="file:GENERATED" />
-		</route>
-
-		<route id="notif-generator">
-			<from uri="direct:generateNf" />
-			<process ref="nfgen" />
-			<marshal ref="ds" />
-			<to uri="activemqA:queue:MEME.IN?replyTo=MEME.OUT" />
-		</route>
-
-		<!-- SYS-2: Consuming notifications and files -->
-		<route id="notif-consumer" autoStartup="true">
-			<from uri="activemqA:queue:MEME.IN" />
-			<threads>
-				<process ref="nfconsume" />
-				<multicast>
-					<to uri="direct:enricher" />
-					<to uri="direct:responder" />
-				</multicast>
-			</threads>
-		</route>
-
-		<route>
-			<from uri="direct:enricher" />
-			<pollEnrich timeout="5000">
-				<simple>file:GENERATED?fileName=${header.CamelFileName}&amp;delete=true
-				</simple> <!-- &amp;noop=true&amp;idempotent=false -->
-			</pollEnrich>
-			<log message="Coping file..." loggingLevel="DEBUG" />
-			<to uri="file:COPIED?fileName=${header.CamelFileName}" />
-			<bean ref="statsHolder" method="putStat(SYS-2-FILE_RECEIVED)" />
-		</route>
-
-		<route>
-			<from uri="direct:responder" />
-			<process ref="resp" />
-			<marshal ref="ds" />
-			<inOnly uri="activemqA:queue:MEME.OUT" />
-		</route>
-
-		<route id="sys2-soap-receiver" autoStartup="true">
-			<from uri="cxf:bean:memeInterfaze" />
-			<process ref="mdi" />
-		</route>
+		
 	</camelContext>
 </beans>

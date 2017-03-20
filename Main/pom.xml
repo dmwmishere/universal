@@ -8,7 +8,6 @@
 		<artifactId>CamelSample</artifactId>
 		<version>0.3</version>
 	</parent>
-	<groupId>org.dmwm.universal</groupId>
 	<artifactId>Main</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<name>Main</name>

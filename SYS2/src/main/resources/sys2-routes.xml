@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cxf="http://camel.apache.org/schema/cxf"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+">
+
+	<bean id="nfconsume" class="org.dmwm.universal.sys2.processors.MemeRequestHandler" />
+	<bean id="resp" class="org.dmwm.universal.sys2.processors.MemeResponder" />
+	<bean id="mdi" class="org.dmwm.universal.sys2.processors.MemeDBInterfaceImpl" />
+
+	<cxf:cxfEndpoint id="memeInterfaze"
+		address="http://localhost:9091/memeInterfaze" serviceClass="org.dmwm.universal.sys2.ws.MemeDBInterface" />
+
+	<routeContext id="sys2-routes" xmlns="http://camel.apache.org/schema/spring">
+
+		<!-- SYS-2: Consuming notifications and files -->
+		<route id="sys2-notif-consumer" autoStartup="true">
+			<from uri="activemqA:queue:MEME.IN" />
+			<threads>
+				<process ref="nfconsume" />
+				<multicast>
+					<to uri="direct:enricher" />
+					<to uri="direct:responder" />
+				</multicast>
+			</threads>
+		</route>
+
+		<route id="sys2-file-reader">
+			<from uri="direct:enricher" />
+			<pollEnrich timeout="5000">
+				<simple>file:GENERATED?fileName=${header.CamelFileName}&amp;delete=true
+				</simple> <!-- &amp;noop=true&amp;idempotent=false -->
+			</pollEnrich>
+			<log message="Coping file..." loggingLevel="DEBUG" />
+			<to uri="file:COPIED?fileName=${header.CamelFileName}" />
+			<bean ref="statsHolder" method="putStat(SYS-2-FILE_RECEIVED)" />
+		</route>
+
+		<route id="sys2-responder">
+			<from uri="direct:responder" />
+			<process ref="resp" />
+			<marshal ref="ds" />
+			<inOnly uri="activemqA:queue:MEME.OUT" />
+		</route>
+
+		<route id="sys2-soap-receiver" autoStartup="true">
+			<from uri="cxf:bean:memeInterfaze" />
+			<process ref="mdi" />
+		</route>
+
+	</routeContext>
+
+</beans>
