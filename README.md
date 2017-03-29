@@ -20,7 +20,7 @@ java -jar Main-1.0-SNAPSHOT.jar
 * Sending stats to influxdb (tps, response time)
 
 ## TODO:
-1. Split systems (sys1, sys2, ...) by maven modules (DONE)
+1. Split systems (syss1, sys2, ...) by maven modules (DONE)
 2. Put stats into database and later insert into influx
 3. Split camel routes to separate files (DONE)
 4. Add memes by calling sys1 service and sending soap-request to sys2

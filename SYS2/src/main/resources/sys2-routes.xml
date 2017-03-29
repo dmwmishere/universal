@@ -31,8 +31,7 @@ http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.
 		<route id="sys2-file-reader">
 			<from uri="direct:enricher" />
 			<pollEnrich timeout="5000">
-				<simple>file:GENERATED?fileName=${header.CamelFileName}&amp;delete=true
-				</simple> <!-- &amp;noop=true&amp;idempotent=false -->
+				<simple>file:GENERATED?fileName=${header.CamelFileName}&amp;delete=true</simple> <!-- &amp;noop=true&amp;idempotent=false -->
 			</pollEnrich>
 			<log message="Coping file..." loggingLevel="DEBUG" />
 			<to uri="file:COPIED?fileName=${header.CamelFileName}" />

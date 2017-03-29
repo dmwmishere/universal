@@ -1,26 +1,18 @@
 package org.dmwm.universal.main;
 
+import org.apache.camel.spring.Main;
 import org.apache.log4j.Logger;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class CamelTest {
 
 	private static final Logger log = Logger.getLogger(CamelTest.class);
 
 	public static void main(String[] args) throws Exception {
-		log.info("STARTING THE APP...");
-		log.warn("Required systems (docker containers): activemq(activemq), hsqldb(chsqldb), kafka(ckafka), influx (cinflux)");
-		System.setProperty("java.security.krb5.conf", "/etc/krb5.conf");
-		System.setProperty("java.security.auth.login.config",
-				"/external/kafka_krb/kafka_client_jaas.conf");
-		try (ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(
-				"applicationContext.xml")) {
-
-			log.info("DONE WITH SPRING " + appContext.getId().hashCode() + ".");
-
-			while (true) {
-				Thread.sleep(5000);
-			}
-		}
+		log.trace("test");
+		log.warn(
+				"STARTING THE APP...\nRequired systems (docker containers):\n\tactivemq(activemq),\n\thsqldb(chsqldb),\n\tkafka(ckafka),\n\tinflux (cinflux)");
+		Main main = new Main();
+		main.setApplicationContextUri("applicationContext.xml");
+		main.start();
 	}
 }

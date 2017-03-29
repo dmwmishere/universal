@@ -22,16 +22,24 @@ public class QueryProcessorImpl implements QueryProcessor {
 	private static final Logger log = Logger.getLogger(QueryProcessorImpl.class);
 
 	private JdbcTemplate jdbct;
-
+//	private SimpleJdbcCall spcall;
 	@Autowired
 	public void setJdbct(DataSource dataSource) {
 		log.info("Setting connection...");
 		jdbct = new JdbcTemplate(dataSource);
+//		spcall = new SimpleJdbcCall(dataSource).withFunctionName("fn_slow").declareParameters(new SqlParameter("delay", Types.INTEGER));
 	}
 
 	@Override
 	public Response getMeme(int id) {
 		log.info("Quering db with id = " + id);
+		
+		long start = System.currentTimeMillis();
+		jdbct.execute("select * from (values(1, fn_slow(500)))");
+		log.debug("Executing FN_SLOW in " + (System.currentTimeMillis() - start) + " ms");
+		
+//		SqlParameterSource in = new MapSqlParameterSource().addValue("delay", 1000);
+//		log.warn("FN_SLOW = " + spcall.executeFunction(Integer.class, 100));
 		return jdbct.queryForObject("select * from memes where id = ?", new Object[]{id}, new RowMapper<Response>(){
 			@Override
 			public Response mapRow(ResultSet resst, int rownum) throws SQLException {
@@ -44,6 +52,7 @@ public class QueryProcessorImpl implements QueryProcessor {
 				mi.setType(resst.getString("type")==null?null:MemeType.valueOf(MemeType.class, resst.getString("type").toUpperCase()));
 				mi.setYear(resst.getInt("year"));
 				rs.setMemeInfo(mi);
+//				try{ Thread.sleep(1000); } catch(Exception ex){ } //!!!!!!!!!!!!!!!
 				return rs;
 			}
 

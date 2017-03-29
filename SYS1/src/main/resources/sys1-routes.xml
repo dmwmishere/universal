@@ -1,15 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cxf="http://camel.apache.org/schema/cxf"
+	xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
+	xmlns:cxf1="http://cxf.apache.org/core"
 	xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
 http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+http://cxf.apache.org/transports/http-jetty/configuration http://cxf.apache.org/schemas/configuration/http-jetty.xsd
+http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
 ">
 
 	<bean id="gzpacker" class="org.dmwm.universal.sys1.processors.GzPacker" />
 	<bean id="nfgen" class="org.dmwm.universal.sys1.processors.NFGenerator" />
 	<bean id="soapproc" class="org.dmwm.universal.sys1.processors.SOAPProcessor" />
+	<bean id="soapproc_stub" class="org.dmwm.universal.sys1.processors.SOAPProcessor_stub" />
+
+    <!-- bean id="logOutbound" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
+ 
+    <cxf1:bus>
+        <cxf1:outInterceptors>
+            <ref bean="logOutbound"/>
+        </cxf1:outInterceptors>
+    </cxf1:bus> 
+
+	<httpj:engine-factory bus="cxf">
+		<httpj:identifiedTLSServerParameters
+			id="secure">
+			<httpj:tlsServerParameters>
+			</httpj:tlsServerParameters>
+		</httpj:identifiedTLSServerParameters>
+
+		<httpj:engine port="9001">
+			<httpj:tlsServerParametersRef id="secure" />
+			<httpj:threadingParameters minThreads="5"
+				maxThreads="15" />
+			<httpj:connector>
+				<bean class="org.eclipse.jetty.server.bio.SocketConnector">
+					<property name="port" value="9001" />
+				</bean>
+			</httpj:connector>
+			<httpj:handlers>
+				<bean class="org.eclipse.jetty.server.handler.DefaultHandler" />
+			</httpj:handlers>
+			<httpj:sessionSupport>true</httpj:sessionSupport>
+		</httpj:engine>
+	</httpj:engine-factory-->
 
 	<cxf:cxfEndpoint id="customerServiceEndpoint"
 		address="http://0.0.0.0:${ws.memesender.port}/memeSender"
@@ -21,23 +57,15 @@ http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.
 
 		<route id="sys1-soap-receiver" autoStartup="true">
 			<from uri="cxf:bean:customerServiceEndpoint" />
-			<choice>
-				<when>
-					<simple>${header.operationName} == 'addMeme'</simple>
-					<log message="WS BOdY: ${in.body}*" />
-					<!-- to ref="callRealWebService" / -->
-					<!-- to uri="spring-ws:http://localhost:9091/memeInterfaze" / -->
-					<to uri="stream:out" />
-				</when>
-				<otherwise>
-					<process ref="soapproc" />
-					<multicast parallelProcessing="false">
-						<to uri="direct:generateFile" />
-						<to uri="direct:generateNf" />
-					</multicast>
-					<unmarshal ref="ds" />
-				</otherwise>
-			</choice>
+			<process ref="soapproc_stub" />
+			<!-- choice> <when> <simple>${header.operationName} == 'addMeme'</simple> 
+				<log message="WS BOdY: ${in.body}*" / -->
+			<!-- to ref="callRealWebService" / -->
+			<!-- to uri="spring-ws:http://localhost:9091/memeInterfaze" / -->
+			<!-- to uri="stream:out" /> </when> <otherwise> <process ref="soapproc" 
+				/> <multicast parallelProcessing="false"> <to uri="direct:generateFile" /> 
+				<to uri="direct:generateNf" /> </multicast> <unmarshal ref="ds" /> </otherwise> 
+				</choice -->
 
 		</route>
 
