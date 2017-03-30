@@ -20,14 +20,7 @@ public class SOAPProcessor_stub implements Processor {
 	@Override
 	public void process(Exchange msg) throws Exception {
 		
-		log.warn("at soap processor stub");
-		long start = System.currentTimeMillis();
 		msg.getOut().setBody(qp.getMeme(1));
-		
-		Thread.sleep(1000);
-		
-		log.info("Static resource resp = " + (System.currentTimeMillis() - start));
-		
 		sh.putStat("soap_stub");
 	}
 

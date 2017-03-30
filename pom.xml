@@ -19,6 +19,7 @@
 		<module>SYS1</module>
 		<module>SYS2</module>
 		<module>Main</module>
+		<module>UniversalWeb</module>
 	</modules>
 
 	<dependencies>

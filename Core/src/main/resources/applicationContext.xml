@@ -13,14 +13,14 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<import resource="sys1-routes.xml"/>
 	<import resource="sys2-routes.xml"/>
 
-	<context:property-placeholder location="file:basic.properties" />
+	<context:property-placeholder location="file:/home/dmwm/Java-projects/CamelSample/basic.properties" />
 	<context:component-scan base-package="org.dmwm.universal" />
 <!-- 
 	<aop:aspectj-autoproxy />
  -->
 	<bean id="properties"
 		class="org.apache.camel.component.properties.PropertiesComponent">
-		<property name="location" value="file:basic.properties" />
+		<property name="location" value="file:/home/dmwm/Java-projects/CamelSample/basic.properties" />
 	</bean>
 
 	<!-- Connect 2 database -->

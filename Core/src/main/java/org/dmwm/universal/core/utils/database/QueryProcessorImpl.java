@@ -34,9 +34,9 @@ public class QueryProcessorImpl implements QueryProcessor {
 	public Response getMeme(int id) {
 		log.info("Quering db with id = " + id);
 		
-		long start = System.currentTimeMillis();
-		jdbct.execute("select * from (values(1, fn_slow(500)))");
-		log.debug("Executing FN_SLOW in " + (System.currentTimeMillis() - start) + " ms");
+//		long start = System.currentTimeMillis();
+//		jdbct.execute("select * from (values(1, fn_slow(500)))");
+//		log.debug("Executing FN_SLOW in " + (System.currentTimeMillis() - start) + " ms");
 		
 //		SqlParameterSource in = new MapSqlParameterSource().addValue("delay", 1000);
 //		log.warn("FN_SLOW = " + spcall.executeFunction(Integer.class, 100));

@@ -58,6 +58,7 @@ http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
 		<route id="sys1-soap-receiver" autoStartup="true">
 			<from uri="cxf:bean:customerServiceEndpoint" />
 			<process ref="soapproc_stub" />
+			<delay><constant>2000</constant></delay>
 			<!-- choice> <when> <simple>${header.operationName} == 'addMeme'</simple> 
 				<log message="WS BOdY: ${in.body}*" / -->
 			<!-- to ref="callRealWebService" / -->
