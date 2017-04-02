@@ -12,7 +12,7 @@ http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.
 	<bean id="mdi" class="org.dmwm.universal.sys2.processors.MemeDBInterfaceImpl" />
 
 	<cxf:cxfEndpoint id="memeInterfaze"
-		address="http://localhost:9091/memeInterfaze" serviceClass="org.dmwm.universal.sys2.ws.MemeDBInterface" />
+		address="/memeInterfaze" serviceClass="org.dmwm.universal.sys2.ws.MemeDBInterface" />
 
 	<routeContext id="sys2-routes" xmlns="http://camel.apache.org/schema/spring">
 

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="d86b2499-03a4-45e4-a8bb-55d8a58667eb" activeEnvironment="Default" name="memeSender-TOMCAT" resourceRoot="" soapui-version="5.2.1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="2361b841-fcdc-46a7-a147-cac6e2962a79" wsaVersion="NONE" name="MemeSenderServiceSoapBinding" type="wsdl" bindingName="{http://ws.sys1.universal.dmwm.org/}MemeSenderServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/UniversalWeb/webservices/memeSender?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/UniversalWeb/webservices/memeSender?wsdl"><con:part><con:url>http://localhost:8080/UniversalWeb/webservices/memeSender?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="MemeSenderService" targetNamespace="http://ws.sys1.universal.dmwm.org/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ws.sys1.universal.dmwm.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
+  <wsdl:types>
+    <xs:schema elementFormDefault="qualified" targetNamespace="http://www.example.org/dataTypes" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/dataTypes">
+      <xs:element name="meme" type="tns:memedesc"/>
+      <xs:element name="memerq" type="tns:memedesc"/>
+      <xs:element name="memers" type="tns:response"/>
+      <xs:complexType name="MemeInfoType">
+        <xs:sequence>
+          <xs:element name="Name" type="xs:string"/>
+          <xs:element minOccurs="0" name="Year" type="xs:int"/>
+          <xs:element minOccurs="0" name="Type" type="xs:string"/>
+          <xs:element minOccurs="0" name="Origin" type="xs:string"/>
+          <xs:element name="Status" type="xs:string"/>
+          <xs:element minOccurs="0" name="Badge" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="response">
+        <xs:sequence>
+          <xs:element name="RqUID" type="xs:string"/>
+          <xs:element name="RqTime" type="xs:dateTime"/>
+          <xs:element name="MemeInfo" type="tns:MemeInfoType"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="memedesc">
+        <xs:sequence>
+          <xs:element name="id" type="xs:int"/>
+          <xs:element minOccurs="0" name="datetime" type="xs:dateTime"/>
+          <xs:element name="uuid" type="xs:string"/>
+          <xs:element name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="dankLevel" type="xs:int"/>
+          <xs:element minOccurs="0" name="crc32" type="xs:long"/>
+          <xs:element minOccurs="0" name="fileType" type="tns:t_fileType"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="data" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="t_fileType">
+        <xs:sequence>
+          <xs:element name="extension" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="size" type="xs:int"/>
+      </xs:complexType>
+      <xs:complexType name="extensions">
+        <xs:sequence/>
+      </xs:complexType>
+      <xs:simpleType name="MemeType">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="Character"/>
+          <xs:enumeration value="Shitposting"/>
+          <xs:enumeration value="VideoGame Character"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="ExtensionType">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="GZ"/>
+          <xs:enumeration value="ZIP"/>
+          <xs:enumeration value="PLAIN"/>
+          <xs:enumeration value="RAR"/>
+          <xs:enumeration value="PNG"/>
+          <xs:enumeration value="JPEG"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:schema>
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://ws.sys1.universal.dmwm.org/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.example.org/dataTypes">
+      <xs:import namespace="http://www.example.org/dataTypes"/>
+      <xs:element name="addMeme" type="tns:addMeme"/>
+      <xs:element name="addMemeResponse" type="tns:addMemeResponse"/>
+      <xs:element name="sendMeme" type="tns:sendMeme"/>
+      <xs:element name="sendMemeResponse" type="tns:sendMemeResponse"/>
+      <xs:complexType name="addMeme">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="MemeInfo" type="ns1:MemeInfoType"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="addMemeResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="return" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="sendMeme">
+        <xs:sequence>
+          <xs:element name="memeid" type="xs:int"/>
+          <xs:element name="dankLevel" type="xs:int"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="sendMemeResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="return" type="ns1:response"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="addMemeResponse">
+    <wsdl:part element="tns:addMemeResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addMeme">
+    <wsdl:part element="tns:addMeme" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="sendMeme">
+    <wsdl:part element="tns:sendMeme" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="sendMemeResponse">
+    <wsdl:part element="tns:sendMemeResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="MemeSender">
+    <wsdl:operation name="addMeme">
+      <wsdl:input message="tns:addMeme" name="addMeme"></wsdl:input>
+      <wsdl:output message="tns:addMemeResponse" name="addMemeResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sendMeme">
+      <wsdl:input message="tns:sendMeme" name="sendMeme"></wsdl:input>
+      <wsdl:output message="tns:sendMemeResponse" name="sendMemeResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="MemeSenderServiceSoapBinding" type="tns:MemeSender">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="addMeme">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="addMeme">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="addMemeResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sendMeme">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="sendMeme">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="sendMemeResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="MemeSenderService">
+    <wsdl:port binding="tns:MemeSenderServiceSoapBinding" name="MemeSenderPort">
+      <soap:address location="http://localhost:8080/UniversalWeb/webservices/memeSender"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/UniversalWeb/webservices/memeSender</con:endpoint></con:endpoints><con:operation id="66a6fbf3-1a76-4372-812e-3e5257c5e8f6" isOneWay="false" action="" name="addMeme" bindingOperationName="addMeme" type="Request-Response" outputName="addMemeResponse" inputName="addMeme" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="9ab54afb-cea2-4898-a902-56b93a327a98" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/UniversalWeb/webservices/memeSender</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.sys1.universal.dmwm.org/" xmlns:dat="http://www.example.org/dataTypes">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ws:addMeme>
+         <!--Optional:-->
+         <MemeInfo>
+            <dat:Name>?</dat:Name>
+            <!--Optional:-->
+            <dat:Year>?</dat:Year>
+            <!--Optional:-->
+            <dat:Type>?</dat:Type>
+            <!--Optional:-->
+            <dat:Origin>?</dat:Origin>
+            <dat:Status>?</dat:Status>
+            <!--Optional:-->
+            <dat:Badge>?</dat:Badge>
+         </MemeInfo>
+      </ws:addMeme>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://ws.sys1.universal.dmwm.org/MemeSender/addMeme"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="40c0d08d-f1f0-41b9-a417-d19afb4d5cc3" isOneWay="false" action="" name="sendMeme" bindingOperationName="sendMeme" type="Request-Response" outputName="sendMemeResponse" inputName="sendMeme" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="9027792e-b36a-4152-8125-f5c21af81bc3" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/UniversalWeb/webservices/memeSender</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.sys1.universal.dmwm.org/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ws:sendMeme>
+         <memeid>${=(int)(Math.random()*6)}</memeid>
+         <dankLevel>${=(int)(Math.random()*50000)}</dankLevel>
+      </ws:sendMeme>
+   </soapenv:Body>
+</soapenv:Envelope>	]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://ws.sys1.universal.dmwm.org/MemeSender/sendMeme"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:testSuite id="016d3f92-44a5-4309-aaba-73266b96f6c3" name="TestSuite 1"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="5ed72cbe-6264-4801-9351-b35e480a8c00" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="TestCase 1" searchProperties="true"><con:settings/><con:testStep type="request" name="sendMeme" id="b302d7ba-f9bd-40c0-a022-2dbb345216f5"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>MemeSenderServiceSoapBinding</con:interface><con:operation>sendMeme</con:operation><con:request name="sendMeme" id="12e3cf35-fcbd-4221-b292-857001622af6"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/UniversalWeb/webservices/memeSender</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.sys1.universal.dmwm.org/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ws:sendMeme>
+         <memeid>${=(int)(Math.random()*6)}</memeid>
+         <dankLevel>${=(int)(Math.random()*50000)}</dankLevel>
+      </ws:sendMeme>
+   </soapenv:Body>
+</soapenv:Envelope>	]]></con:request><con:assertion type="SOAP Response" id="2c4303e8-e70b-4f54-ab08-ae0e7faa264d"/><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:loadTest id="7c290c55-29cd-4ec8-afdb-e40c2a0b36cf" name="TestPoolingCapacity"><con:settings/><con:threadCount>200</con:threadCount><con:startDelay>0</con:startDelay><con:sampleInterval>250</con:sampleInterval><con:calculateTPSOnTimePassed>true</con:calculateTPSOnTimePassed><con:resetStatisticsOnThreadCountChange>true</con:resetStatisticsOnThreadCountChange><con:historyLimit>-1</con:historyLimit><con:testLimit>60</con:testLimit><con:limitType>TIME</con:limitType><con:loadStrategy><con:type>Simple</con:type></con:loadStrategy><con:assertion type="Step Status" name="Step Status"/><con:maxAssertionErrors>100</con:maxAssertionErrors><con:cancelExcessiveThreads>true</con:cancelExcessiveThreads><con:strategyInterval>500</con:strategyInterval></con:loadTest><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/></con:soapui-project>

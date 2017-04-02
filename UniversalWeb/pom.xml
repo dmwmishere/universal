@@ -8,9 +8,7 @@
 		<artifactId>CamelSample</artifactId>
 		<version>0.3</version>
 	</parent>
-	<groupId>org.dmwm.universal</groupId>
 	<artifactId>UniversalWeb</artifactId>
-	<version>0.3</version>
 	<packaging>war</packaging>
 	<name>UniversalWeb Maven Webapp</name>
 	<url>http://maven.apache.org</url>
@@ -20,6 +18,7 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.dmwm.universal</groupId>

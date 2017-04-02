@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cxf="http://camel.apache.org/schema/cxf"
-	xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
-	xmlns:cxf1="http://cxf.apache.org/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:cxf="http://camel.apache.org/schema/cxf"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd 
 http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
-http://cxf.apache.org/transports/http-jetty/configuration http://cxf.apache.org/schemas/configuration/http-jetty.xsd
-http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
 ">
 
 	<bean id="gzpacker" class="org.dmwm.universal.sys1.processors.GzPacker" />
@@ -16,39 +17,10 @@ http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
 	<bean id="soapproc" class="org.dmwm.universal.sys1.processors.SOAPProcessor" />
 	<bean id="soapproc_stub" class="org.dmwm.universal.sys1.processors.SOAPProcessor_stub" />
 
-    <!-- bean id="logOutbound" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
- 
-    <cxf1:bus>
-        <cxf1:outInterceptors>
-            <ref bean="logOutbound"/>
-        </cxf1:outInterceptors>
-    </cxf1:bus> 
-
-	<httpj:engine-factory bus="cxf">
-		<httpj:identifiedTLSServerParameters
-			id="secure">
-			<httpj:tlsServerParameters>
-			</httpj:tlsServerParameters>
-		</httpj:identifiedTLSServerParameters>
-
-		<httpj:engine port="9001">
-			<httpj:tlsServerParametersRef id="secure" />
-			<httpj:threadingParameters minThreads="5"
-				maxThreads="15" />
-			<httpj:connector>
-				<bean class="org.eclipse.jetty.server.bio.SocketConnector">
-					<property name="port" value="9001" />
-				</bean>
-			</httpj:connector>
-			<httpj:handlers>
-				<bean class="org.eclipse.jetty.server.handler.DefaultHandler" />
-			</httpj:handlers>
-			<httpj:sessionSupport>true</httpj:sessionSupport>
-		</httpj:engine>
-	</httpj:engine-factory-->
+    <bean id="logOutbound" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
 
 	<cxf:cxfEndpoint id="customerServiceEndpoint"
-		address="http://0.0.0.0:${ws.memesender.port}/memeSender"
+		address="/memeSender"
 		serviceClass="org.dmwm.universal.sys1.ws.MemeSender" />
 
 	<routeContext id="sys1-routes" xmlns="http://camel.apache.org/schema/spring">

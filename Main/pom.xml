@@ -36,7 +36,7 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-			<plugin>
+			<!--plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
@@ -61,15 +61,12 @@
 						</goals>
 						<configuration>
 							<outputDirectory>${project.build.directory}/lib</outputDirectory>
-							<!-- optional -->
-							<!-- exclude copying test and provided dependencies -->
 							<includeScope>runtime</includeScope>
 							<excludeScope>provided</excludeScope>
-							<!-- optional -->
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin  -->
 		</plugins>
 	</build>
 </project>
