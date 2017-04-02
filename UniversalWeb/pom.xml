@@ -11,14 +11,11 @@
 	<artifactId>UniversalWeb</artifactId>
 	<packaging>war</packaging>
 	<name>UniversalWeb Maven Webapp</name>
-	<url>http://maven.apache.org</url>
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.dmwm.universal</groupId>
@@ -32,6 +29,17 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
 		<finalName>UniversalWeb</finalName>
 	</build>
 </project>
