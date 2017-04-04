@@ -10,7 +10,7 @@
 	<description>Test Java Stuff</description>
 	<properties>
 		<spring.version>4.3.4.RELEASE</spring.version>
-		<camel.version>2.18.1</camel.version>
+		<camel.version>2.18.3</camel.version>
 		<slf4j.version>1.6.6</slf4j.version>
 	</properties>
 

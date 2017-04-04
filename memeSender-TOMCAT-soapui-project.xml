@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project id="d86b2499-03a4-45e4-a8bb-55d8a58667eb" activeEnvironment="Default" name="memeSender-TOMCAT" resourceRoot="" soapui-version="5.2.1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="2361b841-fcdc-46a7-a147-cac6e2962a79" wsaVersion="NONE" name="MemeSenderServiceSoapBinding" type="wsdl" bindingName="{http://ws.sys1.universal.dmwm.org/}MemeSenderServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/UniversalWeb/webservices/memeSender?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/UniversalWeb/webservices/memeSender?wsdl"><con:part><con:url>http://localhost:8080/UniversalWeb/webservices/memeSender?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="MemeSenderService" targetNamespace="http://ws.sys1.universal.dmwm.org/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ws.sys1.universal.dmwm.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
+<con:soapui-project id="d86b2499-03a4-45e4-a8bb-55d8a58667eb" activeEnvironment="Default" name="memeSender-TOMCAT" resourceRoot="" soapui-version="5.2.1" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="2361b841-fcdc-46a7-a147-cac6e2962a79" wsaVersion="NONE" name="MemeSenderServiceSoapBinding" type="wsdl" bindingName="{http://ws.sys1.universal.dmwm.org/}MemeSenderServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/UniversalWeb/webservices/memeSender?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/UniversalWeb/webservices/memeSender?wsdl"><con:part><con:url>http://localhost:8080/UniversalWeb/webservices/memeSender?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="MemeSenderService" targetNamespace="http://ws.sys1.universal.dmwm.org/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ws.sys1.universal.dmwm.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
   <wsdl:types>
     <xs:schema elementFormDefault="qualified" targetNamespace="http://www.example.org/dataTypes" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/dataTypes">
       <xs:element name="meme" type="tns:memedesc"/>
@@ -138,22 +138,16 @@
       <soap:address location="http://localhost:8080/UniversalWeb/webservices/memeSender"/>
     </wsdl:port>
   </wsdl:service>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/UniversalWeb/webservices/memeSender</con:endpoint></con:endpoints><con:operation id="66a6fbf3-1a76-4372-812e-3e5257c5e8f6" isOneWay="false" action="" name="addMeme" bindingOperationName="addMeme" type="Request-Response" outputName="addMemeResponse" inputName="addMeme" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="9ab54afb-cea2-4898-a902-56b93a327a98" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/UniversalWeb/webservices/memeSender</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.sys1.universal.dmwm.org/" xmlns:dat="http://www.example.org/dataTypes">
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/UniversalWeb/webservices/memeSender</con:endpoint></con:endpoints><con:operation id="66a6fbf3-1a76-4372-812e-3e5257c5e8f6" isOneWay="false" action="" name="addMeme" bindingOperationName="addMeme" type="Request-Response" outputName="addMemeResponse" inputName="addMeme" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="9ab54afb-cea2-4898-a902-56b93a327a98" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/UniversalWeb/webservices/memeSender</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.sys1.universal.dmwm.org/" xmlns:dat="http://www.example.org/dataTypes">
    <soapenv:Header/>
    <soapenv:Body>
       <ws:addMeme>
-         <!--Optional:-->
          <MemeInfo>
-            <dat:Name>?</dat:Name>
-            <!--Optional:-->
-            <dat:Year>?</dat:Year>
-            <!--Optional:-->
-            <dat:Type>?</dat:Type>
-            <!--Optional:-->
-            <dat:Origin>?</dat:Origin>
-            <dat:Status>?</dat:Status>
-            <!--Optional:-->
-            <dat:Badge>?</dat:Badge>
+            <dat:Name>FaZe</dat:Name>
+            <dat:Year>2015</dat:Year>
+            <dat:Type>Shitposting</dat:Type>
+            <dat:Origin>MLG</dat:Origin>
+            <dat:Status>Confirmed</dat:Status>
          </MemeInfo>
       </ws:addMeme>
    </soapenv:Body>

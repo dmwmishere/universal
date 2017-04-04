@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans 
-	xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:cxf="http://camel.apache.org/schema/cxf"
-	xsi:schemaLocation="
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsd:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd 
 http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
-">
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
 
 	<bean id="gzpacker" class="org.dmwm.universal.sys1.processors.GzPacker" />
 	<bean id="nfgen" class="org.dmwm.universal.sys1.processors.NFGenerator" />
 	<bean id="soapproc" class="org.dmwm.universal.sys1.processors.SOAPProcessor" />
 	<bean id="soapproc_stub" class="org.dmwm.universal.sys1.processors.SOAPProcessor_stub" />
 
-	<cxf:cxfEndpoint id="customerServiceEndpoint"
-		address="/memeSender"
-		serviceClass="org.dmwm.universal.sys1.ws.MemeSender" />
 
 	<routeContext id="sys1-routes" xmlns="http://camel.apache.org/schema/spring">
 
 		<!-- SYS-1: generate file and send MemeRq -->
 
 		<route id="sys1-soap-receiver" autoStartup="true">
-			<from uri="cxf:bean:customerServiceEndpoint" />
-			<process ref="soapproc_stub" />
-			<delay><constant>2000</constant></delay>
-			<!-- choice> <when> <simple>${header.operationName} == 'addMeme'</simple> 
-				<log message="WS BOdY: ${in.body}*" / -->
-			<!-- to ref="callRealWebService" / -->
-			<!-- to uri="spring-ws:http://localhost:9091/memeInterfaze" / -->
-			<!-- to uri="stream:out" /> </when> <otherwise> <process ref="soapproc" 
-				/> <multicast parallelProcessing="false"> <to uri="direct:generateFile" /> 
-				<to uri="direct:generateNf" /> </multicast> <unmarshal ref="ds" /> </otherwise> 
-				</choice -->
+			<from uri="cxf:/memeSender?serviceClass=org.dmwm.universal.sys1.ws.MemeSender" />
+			<choice>
+				<when>
+					<simple>${header.operationName} == 'addMeme'</simple>
+					<log message="WS BOdY: ${in.body}*" />
+					<!-- to ref="callRealWebService" / -->
+					<to uri="cxf:/memeInterfaze?serviceClass=org.dmwm.universal.sys2.ws.MemeDBInterface" />
+					<to uri="stream:out" />
+				</when>
+				<otherwise>
+					<process ref="soapproc" />
+					<multicast parallelProcessing="false">
+						<to uri="direct:generateFile" />
+						<to uri="direct:generateNf" />
+					</multicast>
+					<unmarshal ref="ds" />
+				</otherwise>
+			</choice>
 
 		</route>
 
