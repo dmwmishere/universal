@@ -15,19 +15,40 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<bean id="soapproc_stub" class="org.dmwm.universal.sys1.processors.SOAPProcessor_stub" />
 
 
+	<cxf:cxfEndpoint id="weather"
+		address="http://www.webservicex.com/globalweather.asmx" serviceClass="net.webservicex.GlobalWeatherSoap"
+		serviceName="ws:GlobalWeatherSoap" loggingFeatureEnabled="true">
+		<cxf:properties>
+			<entry key="dataFormat" value="POJO" />
+		</cxf:properties>
+		<cxf:features>
+			<bean class="org.apache.cxf.transport.common.gzip.GZIPFeature" />
+		</cxf:features>
+	</cxf:cxfEndpoint>
+
 	<routeContext id="sys1-routes" xmlns="http://camel.apache.org/schema/spring">
 
 		<!-- SYS-1: generate file and send MemeRq -->
 
 		<route id="sys1-soap-receiver" autoStartup="true">
-			<from uri="cxf:/memeSender?serviceClass=org.dmwm.universal.sys1.ws.MemeSender" />
+			<from
+				uri="cxf:/memeSender?serviceClass=org.dmwm.universal.sys1.ws.MemeSender" />
 			<choice>
 				<when>
 					<simple>${header.operationName} == 'addMeme'</simple>
 					<log message="WS BOdY: ${in.body}*" />
-					<!-- to ref="callRealWebService" / -->
-					<to uri="cxf:/memeInterfaze?serviceClass=org.dmwm.universal.sys2.ws.MemeDBInterface" />
-					<to uri="stream:out" />
+					<!-- to ref="callRealWebService" / {http://ws.sys1.universal.dmwm.org/}addMeme -->
+					<transform>
+						<constant>Russia</constant>
+					</transform>
+					<setHeader headerName="operationName">
+						<constant>GetCitiesByCountry</constant>
+					</setHeader>
+					<setHeader headerName="operationNamespace">
+						<constant>http://www.webserviceX.NET</constant>
+					</setHeader>
+					<to uri="cxf:bean:weather" />
+					<convertBodyTo type="java.lang.String" charset="utf-8" />
 				</when>
 				<otherwise>
 					<process ref="soapproc" />
