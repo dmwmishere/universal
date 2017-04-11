@@ -19,7 +19,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<routeContext id="sys2-routes" xmlns="http://camel.apache.org/schema/spring">
 
 		<!-- SYS-2: Consuming notifications and files -->
-		<route id="sys2-notif-consumer" autoStartup="true">
+		<route id="sys2-notif-consumer" autoStartup="true" startupOrder="1">
 			<from uri="activemqA:queue:MEME.IN" />
 			<threads>
 				<process ref="nfconsume" />

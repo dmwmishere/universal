@@ -10,9 +10,8 @@ http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
 
 	<!-- Routes and beans for each system -->
-	<import resource="sys1-routes.xml"/>
 	<import resource="sys2-routes.xml"/>
-
+	<import resource="sys1-routes.xml"/>
 	<context:property-placeholder location="file:/home/dmwm/Java-projects/CamelSample/basic.properties" />
 	<context:component-scan base-package="org.dmwm.universal" />
 <!-- 
@@ -56,8 +55,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<camelContext xmlns="http://camel.apache.org/schema/spring">
 	
 		<!-- Routes for each system -->
-		<routeContextRef ref="sys1-routes"/>
 		<routeContextRef ref="sys2-routes"/>
+		<routeContextRef ref="sys1-routes"/>
 		
 		<!-- Common stuff below-->
 		
