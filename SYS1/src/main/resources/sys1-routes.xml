@@ -25,7 +25,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	
 -->
 
-	<!-- cxf:cxfEndpoint id="weather"
+	<cxf:cxfEndpoint id="weather"
 		address="http://www.webservicex.com/globalweather.asmx" serviceClass="net.webservicex.GlobalWeatherSoap"
 		serviceName="ws:GlobalWeatherSoap" loggingFeatureEnabled="true">
 		<cxf:properties>
@@ -34,7 +34,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<cxf:features>
 			<bean class="org.apache.cxf.transport.common.gzip.GZIPFeature" />
 		</cxf:features>
-	</cxf:cxfEndpoint -->
+	</cxf:cxfEndpoint>
 	<!-- cxf:cxfEndpoint id="weather"
 		address="http://secure.smartbearsoftware.com/samples/testcomplete10/webservices/Service.asmx" 
 		wsdlURL="http://secure.smartbearsoftware.com/samples/testcomplete10/webservices/Service.asmx?wsdl"
@@ -47,17 +47,14 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		</cxf:features>
 	</cxf:cxfEndpoint -->
 
-	<cxf:cxfEndpoint id="weather"
+	<!-- cxf:cxfEndpoint id="weather"
 		address="http://localhost:8080/UniversalWeb/webservices/memeInterfaze" 
 		wsdlURL="/home/dmwm/Java-projects/CamelSample/Core/src/main/resources/xsds/memeInterfaze.wsdl"
 		loggingFeatureEnabled="true">
 		<cxf:properties>
 			<entry key="dataFormat" value="MESSAGE" />
 		</cxf:properties>
-		<!-- cxf:features>
-			<bean class="org.apache.cxf.transport.common.gzip.GZIPFeature" />
-		</cxf:features -->
-	</cxf:cxfEndpoint>
+	</cxf:cxfEndpoint -->
 
 
 	<routeContext id="sys1-routes" xmlns="http://camel.apache.org/schema/spring">
@@ -73,10 +70,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 					<log message="WS BOdY: ${in.body}*" />
 					<process ref="soapproc_stub" />
 					<setHeader headerName="operationName">
-						<constant>insertMeme</constant>
+						<constant>GetCitiesByCountry</constant>
 					</setHeader>
 					<setHeader headerName="operationNamespace">
-						<constant>http://ws.sys2.universal.dmwm.org/</constant>
+						<constant>http://www.webserviceX.NET</constant>
 					</setHeader>
 					<to uri="cxf:bean:weather" />
 					<!-- convertBodyTo type="java.lang.String" charset="utf-8" / -->
