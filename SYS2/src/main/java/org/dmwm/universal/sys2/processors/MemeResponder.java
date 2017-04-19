@@ -1,12 +1,14 @@
 package org.dmwm.universal.sys2.processors;
 
+import javax.annotation.Resource;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.log4j.Logger;
+import org.dmwm.universal.core.data.xsds.Response;
 import org.dmwm.universal.core.stats.StatsHolder;
 import org.dmwm.universal.core.utils.database.QueryProcessor;
 import org.dmwm.universal.core.utils.xml.QuickDocumentParser;
-import org.dmwm.universal.core.data.xsds.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Element;
 
@@ -15,7 +17,7 @@ public class MemeResponder implements Processor {
 	@Autowired
 	StatsHolder sh;
 	
-	@Autowired
+	@Resource(name="qpi1")
 	QueryProcessor qp;
 	
 	private static final Logger log = Logger.getLogger(MemeRequestHandler.class);

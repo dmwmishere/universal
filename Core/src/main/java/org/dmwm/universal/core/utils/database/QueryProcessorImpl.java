@@ -12,20 +12,20 @@ import org.dmwm.universal.core.data.xsds.MemeInfoType;
 import org.dmwm.universal.core.data.xsds.MemeType;
 import org.dmwm.universal.core.data.xsds.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-@Repository
 public class QueryProcessorImpl implements QueryProcessor {
 
 	private static final Logger log = Logger.getLogger(QueryProcessorImpl.class);
 
 	private JdbcTemplate jdbct;
-//	private SimpleJdbcCall spcall;
-	@Autowired
+//	private SimpleJdbcCall spall;
+	
 	public void setJdbct(DataSource dataSource) {
-		log.info("Setting connection...");
+		log.info("Setting connection for " + dataSource.getClass().getName());
 		jdbct = new JdbcTemplate(dataSource);
 //		spcall = new SimpleJdbcCall(dataSource).withFunctionName("fn_slow").declareParameters(new SqlParameter("delay", Types.INTEGER));
 	}

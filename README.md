@@ -10,7 +10,7 @@ java -jar Main-1.0-SNAPSHOT.jar
 3. sys2 - retrieves information about a meme from database (HSQLDB) and sends it back to sys1 by JMQ
 
 ## Features:
-* Maven
+* Maven. Uses separate modules for different systems
 * Springframework (beans, injections, jdbc)
 * Property files
 * Camel (cxf/jms/log/threads/timers/file)
@@ -18,12 +18,16 @@ java -jar Main-1.0-SNAPSHOT.jar
 * Log4j (multiple files config)
 * AOP (logging, response time)
 * Sending stats to influxdb (tps, response time)
+* Web-application module 2 run in web-container
 
 ## TODO:
-1. Split systems (syss1, sys2, ...) by maven modules (DONE)
-2. Put stats into database and later insert into influx
-3. Split camel routes to separate files (DONE)
-4. Add memes by calling sys1 service and sending soap-request to sys2
+* Maven profiles
+* JNDI support
+* Performance metrics (heapsize, thread count etc.)
+* Web-form 2 monitor/controll stuff
+* Output errors/exceptions in different log (!)
+* JUnit test cases (!)
+* Hibernate support 
 
 ## FIX:
 * Investigate bottlenecks

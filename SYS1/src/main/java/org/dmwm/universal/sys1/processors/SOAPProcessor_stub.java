@@ -1,32 +1,21 @@
 package org.dmwm.universal.sys1.processors;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
+import javax.annotation.Resource;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.camel.component.cxf.CxfPayload;
-import org.apache.camel.converter.jaxp.XmlConverter;
-import org.apache.cxf.binding.soap.SoapHeader;
 import org.apache.log4j.Logger;
-import org.dmwm.universal.core.data.xsds.MemeInfoType;
 import org.dmwm.universal.core.stats.StatsHolder;
-import org.dmwm.universal.core.utils.database.QueryProcessorImpl;
+import org.dmwm.universal.core.utils.database.QueryProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 public class SOAPProcessor_stub implements Processor {
 
 	@Autowired
 	StatsHolder sh;
 
-	@Autowired
-	QueryProcessorImpl qp;
+	@Resource(name="qpi1")
+	QueryProcessor qp;
 
 	private static final Logger log = Logger.getLogger(SOAPProcessor_stub.class);
 

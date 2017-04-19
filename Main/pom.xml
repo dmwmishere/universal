@@ -23,6 +23,26 @@
 			<artifactId>SYS2</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+
+		<!-- UNIT TESTInG STUFF -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-test</artifactId>
+			<version>${camel.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -36,37 +56,15 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-			<!--plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>org.dmwm.universal.main.CamelTest</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>install</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/lib</outputDirectory>
-							<includeScope>runtime</includeScope>
-							<excludeScope>provided</excludeScope>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin  -->
+			<!--plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jar-plugin</artifactId> 
+				<configuration> <archive> <manifest> <addClasspath>true</addClasspath> <classpathPrefix>lib/</classpathPrefix> 
+				<mainClass>org.dmwm.universal.main.CamelTest</mainClass> </manifest> </archive> 
+				</configuration> </plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> 
+				<artifactId>maven-dependency-plugin</artifactId> <executions> <execution> 
+				<phase>install</phase> <goals> <goal>copy-dependencies</goal> </goals> <configuration> 
+				<outputDirectory>${project.build.directory}/lib</outputDirectory> <includeScope>runtime</includeScope> 
+				<excludeScope>provided</excludeScope> </configuration> </execution> </executions> 
+				</plugin -->
 		</plugins>
 	</build>
 </project>

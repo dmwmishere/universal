@@ -3,13 +3,14 @@ package org.dmwm.universal.core.stats;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
 import org.dmwm.universal.core.utils.database.QueryProcessor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class StatsHolderImpl implements StatsHolder {
 
-	@Autowired
+	@Resource(name="qpi1")
 	QueryProcessor qp;
 	
 	private final String seriesName;
