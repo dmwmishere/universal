@@ -102,7 +102,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<from uri="direct:generateNf" />
 			<process ref="nfgen" />
 			<marshal ref="ds" />
-			<!-- to uri="stub:activemqA:queue:MEME.IN?replyTo=MEME.OUT" / -->
+			<to uri="stub:activemqA:queue:MEME.IN?replyTo=MEME.OUT" />
 			<to uri="mock:result_sys1_message" />
 		</route>
 

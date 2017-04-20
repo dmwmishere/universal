@@ -1,0 +1,9 @@
+<memerq xmlns="http://www.example.org/dataTypes">
+    <id>0</id>
+    <uuid>6efe0950e06b4a87832df6eaf1df4d7c</uuid>
+    <dankLevel>1337</dankLevel>
+    <crc32>4237599643</crc32>
+    <fileType size="1337">
+        <extension>ZIP</extension>
+    </fileType>
+</memerq>

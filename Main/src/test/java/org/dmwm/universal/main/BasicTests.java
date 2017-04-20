@@ -1,16 +1,8 @@
 package org.dmwm.universal.main;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Resource;
 
-import org.apache.camel.EndpointInject;
-import org.apache.camel.Produce;
-import org.apache.camel.ProducerTemplate;
-import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.log4j.Logger;
-import org.dmwm.universal.core.data.xsds.Memedesc;
 import org.dmwm.universal.core.data.xsds.Response;
 import org.dmwm.universal.core.stats.StatsHolderImpl;
 import org.dmwm.universal.core.utils.database.QueryProcessor;
@@ -39,27 +31,6 @@ public class BasicTests extends TestCase {
 
 	@Autowired
 	StatsHolderImpl sh;	
-
-	@EndpointInject(uri = "mock:result_sys1_message")
-    protected MockEndpoint resultEndpoint;
- 
-    @Produce(uri = "direct:test_input1")
-    protected ProducerTemplate template;
-	
-	@Test
-	public void test5_route_sys1_notif() throws Exception {
-		resultEndpoint.expectedMessageCount(1);
-		Memedesc md = new Memedesc();
-		md.setId(1);
-		md.setUuid("666");
-		md.setDankLevel(1337);
-		List<Integer> li = new ArrayList<>();
-		li.add(0);
-		li.add(1337);
-		template.sendBody(li);
-		log.info("RECEIVED AT MOCK: " + resultEndpoint.getExchanges().get(0).getIn().getBody(String.class));
-		resultEndpoint.assertIsSatisfied();
-	}
 	
 	/**
 	 * Create the test case
