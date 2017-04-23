@@ -12,6 +12,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+@Deprecated
 public class QuickDocumentParser {
 	public static Document parseFromString(String xml){
 		Document doc = null;
@@ -25,9 +26,14 @@ public class QuickDocumentParser {
 		}
 		return doc;
 	}
+	
 //	@Deprecated
 	public static String getByTag(Element element, String tag){
 		return element.getElementsByTagName(tag).item(0).getTextContent();
+	}
+	
+	public static void setTagValue(Element element, String tag, String value){
+		element.getElementsByTagName(tag).item(0).setTextContent(new String(value));
 	}
 	
 //	public static Function<String, String> getByTagL(Element element, String tag){

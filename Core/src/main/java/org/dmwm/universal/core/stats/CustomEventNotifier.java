@@ -13,7 +13,7 @@ public class CustomEventNotifier extends EventNotifierSupport {
 	public void notify(EventObject event) throws Exception {
 		if (event instanceof ExchangeSentEvent) {
             ExchangeSentEvent sent = (ExchangeSentEvent) event;
-            log.info("Took " + sent.getTimeTaken() + " millis to send to: " + sent.getEndpoint());
+            log.info("Took " + sent.getTimeTaken() + " millis to send to: " + sent.getEndpoint().getEndpointUri());
         }
 	}
 

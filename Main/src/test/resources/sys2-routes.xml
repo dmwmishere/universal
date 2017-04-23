@@ -20,6 +20,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
 		<!-- SYS-2: Consuming notifications and files -->
 		<route id="sys2-notif-consumer" autoStartup="true" startupOrder="1">
+			<from uri="direct:test_input2" />
 			<from uri="activemqA:queue:MEME.IN" />
 			<threads>
 				<process ref="nfconsume" />
@@ -33,10 +34,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<route id="sys2-file-reader">
 			<from uri="direct:enricher" />
 			<pollEnrich timeout="5000">
-				<simple>file:GENERATED?fileName=${header.CamelFileName}&amp;delete=true</simple> <!-- &amp;noop=true&amp;idempotent=false -->
+				<simple>stub:file:GENERATED?fileName=${header.CamelFileName}&amp;delete=true</simple> <!-- &amp;noop=true&amp;idempotent=false -->
 			</pollEnrich>
 			<log message="Coping file..." loggingLevel="DEBUG" />
-			<to uri="file:COPIED?fileName=${header.CamelFileName}" />
+			<to uri="stub:file:COPIED?fileName=${header.CamelFileName}" />
 			<bean ref="statsHolder" method="putStat(SYS-2-FILE_RECEIVED)" />
 		</route>
 
@@ -44,7 +45,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<from uri="direct:responder" />
 			<process ref="resp" />
 			<marshal ref="ds" />
-			<inOnly uri="activemqA:queue:MEME.OUT" />
+			<inOnly uri="stub:activemqA:queue:MEME.OUT" />
+			<to uri="mock:result_sys2_response" />
 		</route>
 
 		<route id="sys2-soap-receiver" autoStartup="true">
