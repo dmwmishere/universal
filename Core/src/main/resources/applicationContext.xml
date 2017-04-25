@@ -2,12 +2,14 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jolokia="http://www.jolokia.org/jolokia-spring/schema/config"
 	xsd:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd 
 http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
-http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+http://www.jolokia.org/jolokia-spring/schema/config http://www.jolokia.org/jolokia-spring/schema/config/jolokia-config.xsd">
 
 	<!-- Routes and beans for each system -->
 	<import resource="sys2-routes.xml" />
@@ -15,41 +17,42 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<context:property-placeholder
 		location="file:/home/dmwm/Java-projects/CamelSample/basic.properties" />
 	<context:component-scan base-package="org.dmwm.universal" />
+
 	<!-- <aop:aspectj-autoproxy /> -->
+
+	<jolokia:agent lookupConfig="false" systemPropertiesMode="never">
+		<jolokia:config autoStart="true" host="0.0.0.0" port="8778" />
+	</jolokia:agent>
+
 	<bean id="properties"
 		class="org.apache.camel.component.properties.PropertiesComponent">
 		<property name="location"
 			value="file:/home/dmwm/Java-projects/CamelSample/basic.properties" />
 	</bean>
 
-	<!-- Connect 2 database -->
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
-		destroy-method="close">
-		<property name="driverClassName" value="${jdbc.driver}" />
-		<property name="url" value="${jdbc.url}" />
-		<property name="username" value="${jdbc.uname}" />
-		<property name="password" value="${jdbc.pswd}" />
+	<bean id="dbDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:comp/env/jdbc/MyLocalDB" />
 	</bean>
+
+	<!-- Connect 2 database -->
+	<!-- bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" 
+		destroy-method="close"> <property name="driverClassName" value="${jdbc.driver}" 
+		/> <property name="url" value="${jdbc.url}" /> <property name="username" 
+		value="${jdbc.uname}" /> <property name="password" value="${jdbc.pswd}" /> 
+		</bean -->
 
 	<bean id="qpi1"
 		class="org.dmwm.universal.core.utils.database.QueryProcessorImpl">
-		<property name="jdbct" ref="dataSource" />
+		<property name="jdbct" ref="dbDataSource" />
 	</bean>
 
 	<!-- Connect 2 database -->
-	<!-- bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource"
-		destroy-method="close">
-		<property name="driverClassName" value="${mysql.jdbc.driver}" />
-		<property name="url" value="${mysql.jdbc.url}" />
-		<property name="username" value="${mysql.jdbc.uname}" />
-		<property name="password" value="${mysql.jdbc.pswd}" />
-	</bean>
-
-
-	<bean id="qpi2"
-		class="org.dmwm.universal.core.utils.database.QueryProcessorImpl">
-		<property name="jdbct" ref="dataSource" />
-	</bean -->
+	<!-- bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource" 
+		destroy-method="close"> <property name="driverClassName" value="${mysql.jdbc.driver}" 
+		/> <property name="url" value="${mysql.jdbc.url}" /> <property name="username" 
+		value="${mysql.jdbc.uname}" /> <property name="password" value="${mysql.jdbc.pswd}" 
+		/> </bean> <bean id="qpi2" class="org.dmwm.universal.core.utils.database.QueryProcessorImpl"> 
+		<property name="jdbct" ref="dataSource" /> </bean -->
 
 	<!-- Map bean sample -->
 	<bean id="sharedMap" class="java.util.HashMap">
