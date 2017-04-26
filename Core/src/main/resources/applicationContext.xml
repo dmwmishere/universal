@@ -20,9 +20,9 @@ http://www.jolokia.org/jolokia-spring/schema/config http://www.jolokia.org/jolok
 
 	<!-- <aop:aspectj-autoproxy /> -->
 
-	<jolokia:agent lookupConfig="false" systemPropertiesMode="never">
-		<jolokia:config autoStart="true" host="0.0.0.0" port="8778" />
-	</jolokia:agent>
+	<!-- jolokia:agent lookupConfig="false" systemPropertiesMode="never">
+		<jolokia:config autoStart="true" host="0.0.0.0" />
+	</jolokia:agent -->
 
 	<bean id="properties"
 		class="org.apache.camel.component.properties.PropertiesComponent">

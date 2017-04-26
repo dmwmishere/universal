@@ -1,8 +1,7 @@
-<web-app xmlns="http://java.sun.com/xml/ns/javaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
           http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-    version="3.0">
+	version="3.0">
 	<display-name>Archetype Created Web Application</display-name>
 
 	<context-param>
@@ -13,7 +12,8 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-
+	<!-- listener> <listener-class>org.dmwm.universal.web.HawtRunner</listener-class> 
+		</listener -->
 
 	<servlet>
 		<servlet-name>CXFServlet</servlet-name>
@@ -23,6 +23,15 @@
 			enable this feature <async-supported>true</async-supported> -->
 	</servlet>
 
+	<servlet>
+		<servlet-name>jolokia-agent</servlet-name>
+		<servlet-class>org.jolokia.http.AgentServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>jolokia-agent</servlet-name>
+		<url-pattern>/jolokia/*</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>CXFServlet</servlet-name>
 		<url-pattern>/webservices/*</url-pattern>
