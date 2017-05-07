@@ -14,16 +14,12 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<bean id="soapproc" class="org.dmwm.universal.sys1.processors.SOAPProcessor" />
 	<bean id="soapproc_stub" class="org.dmwm.universal.sys1.processors.SOAPProcessor_stub" />
 
-<!--
-	Get data from influxX:
-	influx -execute "select time, operation, value from testMeasure limit 10;" -database testdb -format=csv 
-	
-	sample query:
-	select count(value) from testMeasure where time > now() - 7d group by operation, time(1d) fill(666)
-	influx -execute "select count(value) from testMeasure where time > now() - 7d group by operation, time(1d) fill(666)" -database testdb -format=csv 
-	
-	
--->
+	<!-- Get data from influxX: influx -execute "select time, operation, value 
+		from testMeasure limit 10;" -database testdb -format=csv sample query: select 
+		count(value) from testMeasure where time > now() - 7d group by operation, 
+		time(1d) fill(666) influx -execute "select count(value) from testMeasure 
+		where time > now() - 7d group by operation, time(1d) fill(666)" -database 
+		testdb -format=csv -->
 
 	<cxf:cxfEndpoint id="weather"
 		address="http://www.webservicex.com/globalweather.asmx" serviceClass="net.webservicex.GlobalWeatherSoap"
@@ -35,31 +31,28 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<bean class="org.apache.cxf.transport.common.gzip.GZIPFeature" />
 		</cxf:features>
 	</cxf:cxfEndpoint>
-	<!-- cxf:cxfEndpoint id="weather"
-		address="http://secure.smartbearsoftware.com/samples/testcomplete10/webservices/Service.asmx" 
-		wsdlURL="http://secure.smartbearsoftware.com/samples/testcomplete10/webservices/Service.asmx?wsdl"
-		endpointName="ws:SampleWebServiceSoap" loggingFeatureEnabled="true">
-		<cxf:properties>
-			<entry key="dataFormat" value="PAYLOAD" />
-		</cxf:properties>
-		<cxf:features>
-			<bean class="org.apache.cxf.transport.common.gzip.GZIPFeature" />
-		</cxf:features>
-	</cxf:cxfEndpoint -->
+	<!-- cxf:cxfEndpoint id="weather" address="http://secure.smartbearsoftware.com/samples/testcomplete10/webservices/Service.asmx" 
+		wsdlURL="http://secure.smartbearsoftware.com/samples/testcomplete10/webservices/Service.asmx?wsdl" 
+		endpointName="ws:SampleWebServiceSoap" loggingFeatureEnabled="true"> <cxf:properties> 
+		<entry key="dataFormat" value="PAYLOAD" /> </cxf:properties> <cxf:features> 
+		<bean class="org.apache.cxf.transport.common.gzip.GZIPFeature" /> </cxf:features> 
+		</cxf:cxfEndpoint -->
 
-	<!-- cxf:cxfEndpoint id="weather"
-		address="http://localhost:8080/UniversalWeb/webservices/memeInterfaze" 
-		wsdlURL="/home/dmwm/Java-projects/CamelSample/Core/src/main/resources/xsds/memeInterfaze.wsdl"
-		loggingFeatureEnabled="true">
-		<cxf:properties>
-			<entry key="dataFormat" value="MESSAGE" />
-		</cxf:properties>
-	</cxf:cxfEndpoint -->
+	<!-- cxf:cxfEndpoint id="weather" address="http://localhost:8080/UniversalWeb/webservices/memeInterfaze" 
+		wsdlURL="/home/dmwm/Java-projects/CamelSample/Core/src/main/resources/xsds/memeInterfaze.wsdl" 
+		loggingFeatureEnabled="true"> <cxf:properties> <entry key="dataFormat" value="MESSAGE" 
+		/> </cxf:properties> </cxf:cxfEndpoint -->
 
 
 	<routeContext id="sys1-routes" xmlns="http://camel.apache.org/schema/spring">
 
+
 		<!-- SYS-1: generate file and send MemeRq -->
+
+		<route id="sys1-file-consumer" autoStartup="false">
+			<from uri="file:INT?readLock=changed&amp;readLockMinAge=5s" />
+			<log message="file consumed!" />
+		</route>
 
 		<route id="sys1-soap-receiver" autoStartup="true" startupOrder="2">
 			<from
@@ -100,7 +93,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<from uri="direct:generateNf" />
 			<process ref="nfgen" />
 			<marshal ref="ds" />
-			<to uri="activemqA:queue:MEME.IN?replyTo=MEME.OUT" />
+			<to uri="activemqA:queue:MEME.IN" />
 		</route>
 
 	</routeContext>

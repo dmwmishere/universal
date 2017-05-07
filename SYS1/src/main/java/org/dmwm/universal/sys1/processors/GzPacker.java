@@ -77,6 +77,7 @@ public class GzPacker implements Processor {
 		md.setCrc32(crc.getValue());
 		long end2 = System.currentTimeMillis();
 		log.info("Generating and compressing data: " + (end1 - start1) + "ms., CRC32 calculation: " + (end2 - end1) + "ms.");
+		
 		msg.getOut().setHeader(Exchange.FILE_NAME, md.getUuid() + "." + md.getFileType().getExtension().toString().toLowerCase());
 		msg.getOut().setBody(file);
 		sh.putStat("FILE");

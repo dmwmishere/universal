@@ -19,14 +19,11 @@ java -jar Main-1.0-SNAPSHOT.jar
 * AOP (logging, response time)
 * Sending stats to influxdb (tps, response time)
 * Web-application module 2 run in web-container
+* Embedded Jolokia agent as servlet
+* Junit tests for util classes and camel routes
+
 
 ## TODO:
-* Maven profiles
-* JNDI support
-* Performance metrics (heapsize, thread count etc.)
-* Web-form 2 monitor/controll stuff
-* Output errors/exceptions in different log (!)
-* JUnit test cases (!)
 * Hibernate support 
 
 ## FIX:
