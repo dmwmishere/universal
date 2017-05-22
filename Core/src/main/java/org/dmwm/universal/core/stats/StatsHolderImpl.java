@@ -1,7 +1,9 @@
 package org.dmwm.universal.core.stats;
 
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.Resource;
 
@@ -20,6 +22,8 @@ public class StatsHolderImpl implements StatsHolder {
 	private final static Map<String, Long> operations = new ConcurrentHashMap<>();
 
 	private final static Map<String, Long> resptime = new ConcurrentHashMap<>();
+	
+	private final static Queue<Operation> operQueue = new ConcurrentLinkedQueue<>();
 
 	public StatsHolderImpl(String seriesName) {
 		this.seriesName = seriesName;
@@ -65,5 +69,20 @@ public class StatsHolderImpl implements StatsHolder {
 		qp.stopOperation(id);
 		log.debug(id + " response time = " + rt);
 		return rt;
+	}
+
+	@Override
+	public void putOperation(String id, String name, long finishTime, long responseTime) {
+		operQueue.offer(new Operation(id, name, finishTime, responseTime));
+	}
+	
+	public String getAllInfluxOperations(int packSize){
+		String influxData = "";
+		while(--packSize >= 0 && operQueue.size() > 0){
+			Operation oper = operQueue.poll();
+			influxData = influxData.concat(oper.toString());
+		}
+		log.debug("Influx operation data = " + influxData);
+		return influxData;
 	}
 }

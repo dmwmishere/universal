@@ -20,7 +20,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
 		<!-- SYS-2: Consuming notifications and files -->
 		<route id="sys2-notif-consumer" autoStartup="true" startupOrder="1">
-			<from uri="activemqA:queue:MEME.IN?replyTo=MEME.OUT" />
+			<from uri="activemqA:queue:MEME.IN" />
 			<threads>
 				<process ref="nfconsume" />
 				<multicast>
@@ -44,7 +44,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<from uri="direct:responder" />
 			<process ref="resp" />
 			<marshal ref="ds" />
-			<!-- inOnly uri="activemqA:queue:MEME.OUT" / -->
+			<inOnly uri="activemqA:queue:MEME.OUT" />
 		</route>
 
 		<route id="sys2-soap-receiver" autoStartup="true">

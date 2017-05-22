@@ -2,10 +2,12 @@ package org.dmwm.universal.main;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.dmwm.universal.core.data.xsds.Response;
 import org.dmwm.universal.core.stats.StatsHolderImpl;
@@ -21,6 +23,8 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.ctc.wstx.util.StringUtil;
 
 import junit.framework.TestCase;
 
@@ -68,12 +72,40 @@ public class BasicTests extends TestCase {
 	}
 
 	@Test
-	public void test2_stats_InfluxOutputMetric() throws Exception {
+	public void test2_1_stats_InfluxOutputMetric() throws Exception {
 		String testOutput = sh.getAllInfluxStats(true, 10);
 		log.info(testOutput);
 		assertEquals(true, testOutput.contains("operation="));
 	}
-
+	
+	@Test
+	public void test2_2_stats_Operations() throws Exception {
+		String name = "DankRq";
+		String id = "666";
+		sh.startOperation(id);
+		Thread.sleep(300);
+		long responseTime = sh.stopOperation(id);
+		assertEquals(true, responseTime >= 300 & responseTime <= 320);
+		sh.putOperation(id, name, System.currentTimeMillis(), responseTime);
+		String influxData = sh.getAllInfluxOperations(10);
+		log.info("TEST: OPERATIONS: " + influxData);
+		assertEquals(true, influxData.contains("Name=DankRq"));
+	}
+	
+	@Test
+	public void test2_3_stats_multiple_Operations() throws Exception {
+		String name = "DankRq";
+		for(int i = 0; i < 20; i++){
+		String id = UUID.randomUUID().toString();
+		sh.startOperation(id);
+		long responseTime = sh.stopOperation(id);
+		sh.putOperation(id, name, System.currentTimeMillis(), responseTime);
+		}
+		String influxData = sh.getAllInfluxOperations(3);
+		log.info("TEST: OPERATIONS: \n" + influxData);
+		assertEquals(true, StringUtils.countMatches(influxData, name) == 3);
+	}
+	
 	@Test
 	public void test3_stats_Set2zero() throws Exception {
 		assertEquals(true, sh.getAllInfluxStats(true, 10) == "");
@@ -85,6 +117,7 @@ public class BasicTests extends TestCase {
 		assertNotNull(rs.getMemeInfo());
 		assertEquals(true, "Forever Alone".equals(rs.getMemeInfo().getName()));
 	}
+	
 	
 //	@Test
 //	public void test5_xml_parseString() throws Exception{

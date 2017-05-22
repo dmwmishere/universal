@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsd:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
+
+	<!-- Routes and beans for each system -->
+	<import resource="sys2-routes.xml" />
+	<import resource="sys1-routes.xml" />
+	<context:property-placeholder
+		location="file:/home/dmwm/Java-projects/CamelSample/basic.properties" />
+	<context:component-scan base-package="org.dmwm.universal" />
+	<!-- <aop:aspectj-autoproxy /> -->
+	<bean id="properties"
+		class="org.apache.camel.component.properties.PropertiesComponent">
+		<property name="location"
+			value="file:/home/dmwm/Java-projects/CamelSample/basic.properties" />
+	</bean>
+
+	<!-- Testing DB without connection 2 server -->
+	<jdbc:embedded-database id="embdb" type="HSQL">
+		<jdbc:script location="classpath:memDB/initDB.sql" />
+		<jdbc:script location="classpath:memDB/populateDB.sql" />
+	</jdbc:embedded-database>
+
+
+	<!-- Connect 2 database -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close" depends-on="embdb">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="jdbc:hsqldb:mem:embdb" />
+		<property name="username" value="${jdbc.uname}" />
+		<property name="password" value="${jdbc.pswd}" />
+	</bean>
+
+	<bean id="qpi1"
+		class="org.dmwm.universal.core.utils.database.QueryProcessorImpl">
+		<property name="jdbct" ref="dataSource" />
+	</bean>
+
+	<!-- Connect 2 database -->
+	<!-- bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource" 
+		destroy-method="close"> <property name="driverClassName" value="${mysql.jdbc.driver}" 
+		/> <property name="url" value="${mysql.jdbc.url}" /> <property name="username" 
+		value="${mysql.jdbc.uname}" /> <property name="password" value="${mysql.jdbc.pswd}" 
+		/> </bean> <bean id="qpi2" class="org.dmwm.universal.core.utils.database.QueryProcessorImpl"> 
+		<property name="jdbct" ref="dataSource" /> </bean -->
+
+	<!-- Map bean sample -->
+	<bean id="sharedMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.Long" />
+		</constructor-arg>
+	</bean>
+
+	<!-- Holds statistics -->
+	<bean id="statsHolder" class="org.dmwm.universal.core.stats.StatsHolderImpl">
+		<constructor-arg value="testMeasure" />
+	</bean>
+
+	<bean id="cfA" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="tcp://${mq.host}" /> <!-- ?broker.persistent=false -->
+	</bean>
+
+	<bean id="activemqA" class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="connectionFactory" ref="cfA" />
+		<property name="asyncConsumer" value="true" />
+	</bean>
+
+
+	<camelContext xmlns="http://camel.apache.org/schema/spring">
+
+		<!-- Routes for each system -->
+		<routeContextRef ref="sys2-routes" />
+		<routeContextRef ref="sys1-routes" />
+
+		<!-- Common stuff below -->
+
+		<!-- Setting up default thread pool -->
+		<threadPoolProfile id="defaultThreadPoolProfile"
+			defaultProfile="true" poolSize="20" maxPoolSize="40" maxQueueSize="500"
+			allowCoreThreadTimeOut="false" rejectedPolicy="CallerRuns" />
+
+		<endpoint id="callRealWebService"
+			uri="http://localhost:9091/memeInterfaze?throwExceptionOnFailure=true" />
+
+		<dataFormats>
+			<jaxb id="ds" prettyPrint="true" contextPath="org.dmwm.universal.core.data.xsds" />
+		</dataFormats>
+
+		<!-- Sending executed operations into influx -->
+		<route id="send2influx" autoStartup="true">
+			<from uri="timer://foo?fixedRate=true&amp;period={{influx.period}}" />
+			<bean ref="statsHolder" method="getAllInfluxStats(true, {{influx.period}})" />
+			<filter>
+				<simple>${in.body} != "" and ${in.body} != null</simple>
+				<setHeader headerName="CamelHttpMethod">
+					<constant>POST</constant>
+				</setHeader>
+				<to uri="http://{{influx.url}}/write?db={{influx.db}}" />
+			</filter>
+		</route>
+
+	</camelContext>
+</beans>

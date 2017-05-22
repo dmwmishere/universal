@@ -1,0 +1,10 @@
+<memers xmlns="http://www.example.org/dataTypes">
+    <RqUID>24535985955e45029ebe55a33ff94ed6</RqUID>
+    <MemeInfo>
+        <Name>Lenny Face</Name>
+        <Year>2012</Year>
+        <Type>Shitposting</Type>
+        <Origin>Ylilauta</Origin>
+        <Status>Confirmed</Status>
+    </MemeInfo>
+</memers>

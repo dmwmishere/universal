@@ -46,7 +46,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
 	<routeContext id="sys1-routes" xmlns="http://camel.apache.org/schema/spring">
 
-
 		<!-- SYS-1: generate file and send MemeRq -->
 
 		<route id="sys1-file-consumer" autoStartup="false">
@@ -93,7 +92,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<from uri="direct:generateNf" />
 			<process ref="nfgen" />
 			<marshal ref="ds" />
-			<to uri="activemqA:queue:MEME.IN" />
+			<to uri="activemqA:queue:MEME.IN?replyTo=MEME.OUT" />
 		</route>
 
 	</routeContext>

@@ -11,17 +11,21 @@ http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
 http://www.jolokia.org/jolokia-spring/schema/config http://www.jolokia.org/jolokia-spring/schema/config/jolokia-config.xsd">
 
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+
 	<!-- Routes and beans for each system -->
-	<import resource="sys2-routes.xml" />
-	<import resource="sys1-routes.xml" />
+	<!-- <import resource="sys2-routes.xml" /> <import resource="sys1-routes.xml" 
+		/> -->
+	<import resource="sys0-routes.xml" />
+
 	<context:property-placeholder
 		location="file:/home/dmwm/Java-projects/CamelSample/basic.properties" />
 	<context:component-scan base-package="org.dmwm.universal" />
 
 	<!-- <aop:aspectj-autoproxy /> -->
 
-	<!-- jolokia:agent lookupConfig="false" systemPropertiesMode="never"> <jolokia:config 
-		autoStart="true" host="0.0.0.0" /> </jolokia:agent -->
+	<!--jolokia:agent lookupConfig="false" systemPropertiesMode="never"> <jolokia:config 
+		autoStart="true" host="0.0.0.0" port="1337"/> </jolokia:agent -->
 
 	<bean id="properties"
 		class="org.apache.camel.component.properties.PropertiesComponent">
@@ -29,16 +33,17 @@ http://www.jolokia.org/jolokia-spring/schema/config http://www.jolokia.org/jolok
 			value="file:/home/dmwm/Java-projects/CamelSample/basic.properties" />
 	</bean>
 
-	<bean id="dbDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-		<property name="jndiName" value="java:comp/env/jdbc/MyDB" />
-	</bean>
+	<!-- bean id="dbDataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> 
+		<property name="jndiName" value="java:comp/env/jdbc/MyDB" /> </bean -->
 
 	<!-- Connect 2 database -->
-	<!-- bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" 
-		destroy-method="close"> <property name="driverClassName" value="${jdbc.driver}" 
-		/> <property name="url" value="${jdbc.url}" /> <property name="username" 
-		value="${jdbc.uname}" /> <property name="password" value="${jdbc.pswd}" /> 
-		</bean -->
+	<bean id="dbDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.uname}" />
+		<property name="password" value="${jdbc.pswd}" />
+	</bean>
 
 	<bean id="qpi1"
 		class="org.dmwm.universal.core.utils.database.QueryProcessorImpl">
@@ -69,23 +74,22 @@ http://www.jolokia.org/jolokia-spring/schema/config http://www.jolokia.org/jolok
 		<property name="jndiName" value="java:comp/env/jms/ConnectionFactory" />
 	</bean>
 
-	<!-- bean id="ibmFac1"
-		class="org.springframework.jms.connection.SingleConnectionFactory"
-		destroy-method="destroy">
-		<constructor-arg ref="cfT" />
-	</bean -->
-
+	<!-- bean id="ibmFac1" class="org.springframework.jms.connection.SingleConnectionFactory" 
+		destroy-method="destroy"> <constructor-arg ref="cfT" /> </bean --><!-- ?broker.persistent=false -->
+	<!-- bean id="cfT" class="org.apache.activemq.ActiveMQConnectionFactory"> 
+		<property name="brokerURL" value="tcp://${mq.host}" /> <property name="maxThreadPoolSize" 
+		value="2" /> </bean -->
 	<!-- bean id="activemqA" class="org.apache.activemq.camel.component.ActiveMQComponent"> 
 		<property name="connectionFactory" ref="cfT" /> <property name="asyncConsumer" 
 		value="true" /> </bean -->
-	<bean name="activemqA" class="org.apache.camel.component.jms.JmsComponent"
+	<bean name="jms" class="org.apache.camel.component.jms.JmsComponent"
 		destroy-method="doStop">
 		<property name="transacted" value="false" />
 		<property name="concurrentConsumers" value="1" />
-		<property name="maxConcurrentConsumers" value="2" />
+		<property name="maxConcurrentConsumers" value="1" />
 		<property name="acceptMessagesWhileStopping" value="false" />
 		<property name="acknowledgementModeName" value="AUTO_ACKNOWLEDGE" />
-		<property name="cacheLevelName" value="CACHE_SESSION" />
+		<property name="cacheLevelName" value="CACHE_AUTO" />
 		<property name="username" value="admin" />
 		<property name="password" value="passw0rd" />
 		<property name="connectionFactory" ref="cfT" />
@@ -95,14 +99,14 @@ http://www.jolokia.org/jolokia-spring/schema/config http://www.jolokia.org/jolok
 	<camelContext xmlns="http://camel.apache.org/schema/spring">
 
 		<!-- Routes for each system -->
-		<routeContextRef ref="sys2-routes" />
-		<routeContextRef ref="sys1-routes" />
-
+		<!-- <routeContextRef ref="sys2-routes" /> <routeContextRef ref="sys1-routes" 
+			/> -->
+		<routeContextRef ref="sys0-routes" />
 		<!-- Common stuff below -->
 
 		<!-- Setting up default thread pool -->
 		<threadPoolProfile id="defaultThreadPoolProfile"
-			defaultProfile="true" poolSize="20" maxPoolSize="40" maxQueueSize="500"
+			defaultProfile="true" poolSize="2" maxPoolSize="2" maxQueueSize="500"
 			allowCoreThreadTimeOut="false" rejectedPolicy="CallerRuns" />
 
 		<endpoint id="callRealWebService"
