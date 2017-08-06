@@ -10,38 +10,36 @@ http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
 
 
-	<!-- bean id="jetty" class="org.apache.camel.component.jetty9.JettyHttpComponent9">
-		<property name="maxThreads" value="300" />
-		<property name="minThreads" value="50" />
-		
-	</bean -->
-
+	<!-- bean id="jetty" class="org.apache.camel.component.jetty9.JettyHttpComponent9"> 
+		<property name="maxThreads" value="300" /> <property name="minThreads" value="50" 
+		/> </bean -->
+	
 	<routeContext id="sys0-routes" xmlns="http://camel.apache.org/schema/spring">
 
-		<route id="sys0-jms-request" autoStartup="true">
-			<from uri="servlet:test/call" />
-			<threads poolSize="200" maxPoolSize="300" maxQueueSize="1000">
-				<transform>
-					<constant>Jet fuel can't melt dank memes</constant>
-				</transform>
-				<bean ref="statsHolder" method="putStat(SYS-0-REQUEST)" />
-				<to uri="jms:queue:CAROLINA.IN?replyTo=CAROLINA.OUT" pattern="InOut" />
-			</threads>
+		<route id="RS_RestletDemo">
+			<from uri="restlet:http://0.0.0.0:9080/stj-agent/rest/reg?restletMethods=post" />
+			<log message="BODY = ${in.body}" />
+			<transform>
+				<simple>${random(100000)}
+				</simple>
+			</transform>
 		</route>
 
-		<route id="sys0-jms-reply" autoStartup="true">
-			<from uri="servlet:test/call2" />
-			<from uri="jms:queue:CAROLINA.IN?asyncConsumer=true" />
-			<threads poolSize="200" maxPoolSize="400" maxQueueSize="1000">
-				<transform>
-					<constant>4/20 blaze it m8</constant>
-				</transform>
-				<delay>
-					<constant>1000</constant>
-				</delay>
-				<bean ref="statsHolder" method="putStat(SYS-0-RESPONSE)" />
-			</threads>
-		</route>
+		<!-- rest path="/test"> <get uri="/subtest1"> <transform><Constant>get 
+			subtest 1</Constant></transform> </get> <get uri="/subtest2" consumes="application/json"> 
+			<transform><Constant>get subtest 2</Constant></transform> </get> <post uri="/subtest3"> 
+			<transform><Constant>get subtest 3</Constant></transform> </post> </rest -->
+
+		<!-- route id="sys0-jms-request" autoStartup="false"> <from uri="servlet:test/call" 
+			/> <threads poolSize="200" maxPoolSize="300" maxQueueSize="1000"> <transform> 
+			<constant>Jet fuel can't melt dank memes</constant> </transform> <bean ref="statsHolder" 
+			method="putStat(SYS-0-REQUEST)" /> <to uri="jms:queue:CAROLINA.IN?replyTo=CAROLINA.OUT" 
+			pattern="InOut" /> </threads> </route> <route id="sys0-jms-reply" autoStartup="false"> 
+			<from uri="servlet:test/call2" /> <from uri="jms:queue:CAROLINA.IN?asyncConsumer=true" 
+			/> <threads poolSize="200" maxPoolSize="400" maxQueueSize="1000"> <transform> 
+			<constant>4/20 blaze it m8</constant> </transform> <delay> <constant>1000</constant> 
+			</delay> <bean ref="statsHolder" method="putStat(SYS-0-RESPONSE)" /> </threads> 
+			</route -->
 
 	</routeContext>
 

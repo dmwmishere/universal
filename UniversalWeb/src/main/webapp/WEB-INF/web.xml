@@ -37,13 +37,21 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
+	<!-- RESTlet -->
+	<!-- servlet>
+		<servlet-name>RestletServlet</servlet-name>
+		<servlet-class>org.restlet.ext.spring.SpringServerServlet</servlet-class>
+		<init-param>
+			<param-name>org.restlet.component</param-name>
+			<param-value>RestletComponent</param-value>
+		</init-param>
+	</servlet -->
+
 	<!-- Camel servlet mapping -->
 	<servlet-mapping>
 		<servlet-name>CamelServlet</servlet-name>
 		<url-pattern>/camel/*</url-pattern>
 	</servlet-mapping>
-
-
 	<servlet-mapping>
 		<servlet-name>jolokia-agent</servlet-name>
 		<url-pattern>/jolokia/*</url-pattern>
@@ -52,5 +60,8 @@
 		<servlet-name>CXFServlet</servlet-name>
 		<url-pattern>/webservices/*</url-pattern>
 	</servlet-mapping>
-
+	<!-- servlet-mapping>
+		<servlet-name>RestletServlet</servlet-name>
+		<url-pattern>/rs/*</url-pattern>
+	</servlet-mapping -->
 </web-app>

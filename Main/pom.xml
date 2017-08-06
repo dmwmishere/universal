@@ -64,6 +64,18 @@
 			<version>5.10.0</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- ============= CUCUMBER STUFF ================= -->
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>${cucumber.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-junit</artifactId>
+			<version>${cucumber.version}</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>

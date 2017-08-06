@@ -12,6 +12,14 @@
 		<version>0.3</version>
 	</parent>
 
+	<repositories>
+		<repository>
+			<id>maven.restlet.org</id>
+			<name>maven.restlet.org</name>
+			<url>http://maven.restlet.org</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<!-- SPRING -->
 		<dependency>
@@ -85,7 +93,25 @@
 			<artifactId>camel-servlet</artifactId>
 			<version>${camel.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-restlet</artifactId>
+			<version>${camel.version}</version>
+		</dependency>
 		<!-- MISC -->
+
+		<!-- Some loominarteh shit for REST engine -->
+		<!-- dependency>
+			<groupId>com.noelios.restlet</groupId>
+			<artifactId>com.noelios.restlet</artifactId>
+			<version>1.1.10</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet.ext.spring</artifactId>
+			<version>2.0.15</version>
+		</dependency -->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>

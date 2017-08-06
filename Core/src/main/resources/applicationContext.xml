@@ -26,6 +26,8 @@ http://www.jolokia.org/jolokia-spring/schema/config http://www.jolokia.org/jolok
 
 	<!--jolokia:agent lookupConfig="false" systemPropertiesMode="never"> <jolokia:config 
 		autoStart="true" host="0.0.0.0" port="1337"/> </jolokia:agent -->
+	
+	<!-- RESTlet config used by SYS0 -->
 
 	<bean id="properties"
 		class="org.apache.camel.component.properties.PropertiesComponent">
@@ -68,32 +70,6 @@ http://www.jolokia.org/jolokia-spring/schema/config http://www.jolokia.org/jolok
 	<!-- Holds statistics -->
 	<bean id="statsHolder" class="org.dmwm.universal.core.stats.StatsHolderImpl">
 		<constructor-arg value="testMeasure" />
-	</bean>
-
-	<bean id="cfT" class="org.springframework.jndi.JndiObjectFactoryBean">
-		<property name="jndiName" value="java:comp/env/jms/ConnectionFactory" />
-	</bean>
-
-	<!-- bean id="ibmFac1" class="org.springframework.jms.connection.SingleConnectionFactory" 
-		destroy-method="destroy"> <constructor-arg ref="cfT" /> </bean --><!-- ?broker.persistent=false -->
-	<!-- bean id="cfT" class="org.apache.activemq.ActiveMQConnectionFactory"> 
-		<property name="brokerURL" value="tcp://${mq.host}" /> <property name="maxThreadPoolSize" 
-		value="2" /> </bean -->
-	<!-- bean id="activemqA" class="org.apache.activemq.camel.component.ActiveMQComponent"> 
-		<property name="connectionFactory" ref="cfT" /> <property name="asyncConsumer" 
-		value="true" /> </bean -->
-	<bean name="jms" class="org.apache.camel.component.jms.JmsComponent"
-		destroy-method="doStop">
-		<property name="transacted" value="false" />
-		<property name="concurrentConsumers" value="1" />
-		<property name="maxConcurrentConsumers" value="1" />
-		<property name="acceptMessagesWhileStopping" value="false" />
-		<property name="acknowledgementModeName" value="AUTO_ACKNOWLEDGE" />
-		<property name="cacheLevelName" value="CACHE_AUTO" />
-		<property name="username" value="admin" />
-		<property name="password" value="passw0rd" />
-		<property name="connectionFactory" ref="cfT" />
-		<!-- property name="exceptionListener" ref="cfT" / -->
 	</bean>
 
 	<camelContext xmlns="http://camel.apache.org/schema/spring">

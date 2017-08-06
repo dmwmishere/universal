@@ -29,6 +29,4 @@ insert into memes (name, type, year, status, origin, badge) values
 ('Doge', 'Character', 2013, 'Confirmed', 'Tumblr', null),
 ('Pepe the Frog', 'Character', 2016, 'Confirmed', 'Boy''s Club', null);
 
-
-
 select * from memes;

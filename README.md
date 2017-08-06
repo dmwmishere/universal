@@ -25,6 +25,7 @@ java -jar Main-1.0-SNAPSHOT.jar
 
 ## TODO:
 * Hibernate support 
+* Cucumber scenarios
 
 ## FIX:
 * Investigate bottlenecks
